@@ -141,6 +141,9 @@ def _solve_ipm_impl(
         ):
             status = "numerical_failure"
             break
+        if float(np.max(np.abs(x))) > 1e10:
+            status = "unbounded"
+            break
         mu = float(s @ z) / p
         if mu < 0 or not np.isfinite(mu):
             status = "numerical_failure"

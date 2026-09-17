@@ -80,7 +80,7 @@ def test_corpus_edge_cases_10() -> None:
 
     # 2) Degenerate P=0
     r = solve(degenerate_qp())
-    assert r.status in {"optimal", "max_iter", "numerical_failure"}
+    assert r.status in {"optimal", "max_iter", "numerical_failure", "unbounded"}
 
     # 3) Equality only
     p = QPProblem(
