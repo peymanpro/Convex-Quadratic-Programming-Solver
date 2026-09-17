@@ -8,7 +8,9 @@
 - Unbounded problems: heuristically detected via iterate-norm growth (> 1e10)
   and reported as status `unbounded`.
 - All problems must have finite data (NaN/Inf rejected).
-- Dense path is O(n^3) in memory; the sparse path relies on SciPy SuperLU.
+- Dense linear solve: time ~ O((n+m)^3), memory ~ O((n+m)^2),
+  where n+m is the reduced KKT dimension (not the original QP size).
+- Sparse path relies on SciPy SuperLU.
 - Reference comparison uses OSQP and Clarabel.
 - Docker build is not executed locally; Dockerfile is provided as-is.
 
