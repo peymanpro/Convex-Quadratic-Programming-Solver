@@ -2,15 +2,15 @@
 
 ## Current Phase
 
-Phase 4 - Inequality Constraints & Slack Variables
+Phase 5 - Primal-Dual Interior-Point Method
 
 ## Current Subphase
 
-4.6 - Numerical Tests
+5.8 - Failure States
 
 ## Overall Progress
 
-4 / 19 phases completed
+5 / 19 phases completed
 
 ## Completed
 
@@ -18,21 +18,23 @@ Phase 4 - Inequality Constraints & Slack Variables
 - Phase 1 - Mathematical Foundations
 - Phase 2 - Problem Model & Validation
 - Phase 3 - Equality-Constrained QP
-- 4.1 Slack Variables
-- 4.2 Primal/Dual Variables
-- 4.3 Central Path
-- 4.4 Barrier Parameter
-- 4.5 Perturbed KKT System
-- 4.6 Numerical Tests (10 constrained QPs)
+- Phase 4 - Inequality Constraints & Slack Variables
+- 5.1 Newton System
+- 5.2 Residual System
+- 5.3 Search Direction
+- 5.4 Step Length (fraction-to-boundary)
+- 5.5 Barrier Update
+- 5.6 Stopping Criteria
+- 5.7 Convergence Diagnostics (solver/diagnostics.py)
+- 5.8 Failure States (max_iter, numerical_failure)
 
 ## In Progress
 
-- Phase 5 - Primal-Dual Interior-Point Method (basic IPM already implemented; refinements next)
+- Phase 6 - Mehrotra Predictor-Corrector
 
 ## Next
 
-- Phase 5 - diagnostics, stopping criteria, failure states
-- Phase 6 - Mehrotra predictor-corrector
+- Phase 6 - affine predictor, corrector, combined direction
 
 ## Blocked
 
@@ -40,13 +42,11 @@ Phase 4 - Inequality Constraints & Slack Variables
 
 ## Technical Decisions
 
-- Slack form: G x + s = h, s > 0, with dual z > 0.
-- Reduced KKT via W = diag(z)/diag(s).
-- Newton RHS: bx = -r_d + G^T (r_c / s) - G^T (W r_g), with r_c = s*z - sigma*mu.
-- dz = (-r_c - z*ds)/s (sign corrected during debugging).
-- Fraction-to-boundary with eta = 0.995.
-- Equality-only path uses a single dense KKT solve.
-- Regularization: +1e-10 * I on H block.
+- Stopping: primal <= tol, dual <= tol, duality_gap <= tol, all in infinity norm.
+- Fraction-to-boundary eta = 0.995 default.
+- Numerical failure caught around the linear solve; status set accordingly.
+- IterationRecord captures step_length; IPM history records match.
+- Diagnostics module decoupled from IPM (records list, as_dicts()).
 
 ## Scope Changes
 
@@ -54,19 +54,19 @@ Phase 4 - Inequality Constraints & Slack Variables
 
 ## Acceptance Status
 
-- Tests: PASS (10 IPM tests + prior)
+- Tests: PASS (30 total)
 - Lint: PASS
 - Formatting: PASS
 - Type Check: PASS
 - Coverage (solver): ~90 percent
-- Constrained QPs solved: 10/10 with status optimal
-- Complementarity <= 1e-6 verified
-- Duality gap <= 1e-6 verified
+- Constrained QPs solved: 10/10 optimal
+- Failure states: tested (infeasible -> max_iter; singular -> numerical_failure/max_iter)
+- Documentation: interior-point-method.md added
 - Benchmarks: Not yet implemented
 
 ## Known Limitations
 
-- Basic IPM only (Mehrotra predictor-corrector arrives in Phase 6).
+- Basic IPM (no Mehrotra yet).
 - Dense KKT only (sparse in Phase 7).
 
 ## Last Verified
@@ -75,4 +75,4 @@ Phase 4 - Inequality Constraints & Slack Variables
 
 ## Next Action
 
-Begin Phase 5 - refine diagnostics, stopping criteria, failure states.
+Begin Phase 6 - Mehrotra predictor-corrector.

@@ -177,6 +177,7 @@ def solve_ipm(
         alpha_d = _step_length(z, dz, options.eta)
         alpha = min(alpha_p, alpha_d)
 
+        history[-1]["step_length"] = float(alpha)
         x = x + alpha * dx
         if m:
             y = y + alpha * dy
