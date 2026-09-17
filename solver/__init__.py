@@ -19,7 +19,7 @@ from solver.problem import QPProblem
 from solver.result import SolverResult
 from solver.validation import validate_problem
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 
 def solve(
