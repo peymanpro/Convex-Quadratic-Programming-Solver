@@ -14,13 +14,19 @@ from solver import solve
 
 try:
     import osqp  # type: ignore
-except ImportError:
-    osqp = None
+except ImportError as exc:
+    raise SystemExit(
+        "OSQP is required for reference comparison. "
+        "Install with: pip install -e .[bench]"
+    ) from exc
 
 try:
     import clarabel  # type: ignore
-except ImportError:
-    clarabel = None
+except ImportError as exc:
+    raise SystemExit(
+        "Clarabel is required for reference comparison. "
+        "Install with: pip install -e .[bench]"
+    ) from exc
 
 
 def _compare_osqp(
