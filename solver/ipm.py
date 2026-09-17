@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 import numpy as np
 from numpy.typing import NDArray
 
+from solver.linear_solver import LinearSolverOptions, factor_and_solve
 from solver.problem import QPProblem
 from solver.residuals import compute_residuals
 
@@ -19,6 +20,8 @@ class IPMOptions:
     sigma: float = 0.1
     eta: float = 0.995
     regularization: float = 1e-10
+    backend: str = "dense"  # "dense" or "sparse"
+    sparse_threshold: int = 100_000
 
 
 @dataclass
@@ -179,7 +182,18 @@ def _solve_ipm_impl(
         bx = -r_d + G.T @ (r_c / s) - G.T @ (W * r_g)
         rhs = np.concatenate([bx, -r_p]) if m else bx
 
-        sol = np.linalg.solve(K, rhs)
+        try:
+            sol = factor_and_solve(
+                K,
+                rhs,
+                LinearSolverOptions(
+                    backend=options.backend,  # type: ignore[arg-type]
+                    sparse_threshold=options.sparse_threshold,
+                ),
+            )
+        except Exception:
+            status = "numerical_failure"
+            break
         dx = sol[:n]
         dy = sol[n:] if m else np.zeros(0)
         ds = -r_g - G @ dx

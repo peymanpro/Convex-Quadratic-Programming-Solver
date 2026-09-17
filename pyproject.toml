@@ -34,6 +34,9 @@ cqp-solve = "solver.cli:main"
 [tool.setuptools]
 packages = ["solver", "validation"]
 
+[tool.setuptools.package-data]
+solver = ["py.typed"]
+
 [tool.ruff]
 line-length = 88
 target-version = "py312"

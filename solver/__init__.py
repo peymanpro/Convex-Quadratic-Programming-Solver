@@ -27,6 +27,7 @@ def solve(
     *,
     method: str = "mehrotra",
     options: IPMOptions | None = None,
+    backend: str = "dense",
 ) -> SolverResult:
     """Solve a convex QP and return a SolverResult.
 
@@ -34,12 +35,26 @@ def solve(
         problem: QPProblem instance.
         method: "mehrotra" (default) or "ipm".
         options: IPMOptions; defaults used if None.
+        backend: "dense" (default) or "sparse".
 
     Raises:
         InvalidProblem, NonConvexProblem, DimensionMismatch: bad data.
         ValueError: unknown method.
     """
     validate_problem(problem)
+    if options is None:
+        options = IPMOptions(backend=backend)
+    elif backend != "dense":
+        options = IPMOptions(
+            max_iter=options.max_iter,
+            tol=options.tol,
+            mu0=options.mu0,
+            sigma=options.sigma,
+            eta=options.eta,
+            regularization=options.regularization,
+            backend=backend,
+            sparse_threshold=options.sparse_threshold,
+        )
     if method == "mehrotra":
         solver = solve_mehrotra
     elif method == "ipm":

@@ -6,6 +6,7 @@ import numpy as np
 from numpy.typing import NDArray
 
 from solver.ipm import IPMOptions, IPMResult, _solve_equality_only, _step_length
+from solver.linear_solver import LinearSolverOptions, factor_and_solve
 from solver.problem import QPProblem
 from solver.residuals import compute_residuals
 
@@ -118,8 +119,15 @@ def _solve_mehrotra_impl(
         bx_aff = -r_d + G.T @ (r_c_aff / s) - G.T @ (W * r_g)
         rhs_aff = np.concatenate([bx_aff, -r_p]) if m else bx_aff
         try:
-            sol_aff = np.linalg.solve(K, rhs_aff)
-        except np.linalg.LinAlgError:
+            sol_aff = factor_and_solve(
+                K,
+                rhs_aff,
+                LinearSolverOptions(
+                    backend=options.backend,  # type: ignore[arg-type]
+                    sparse_threshold=options.sparse_threshold,
+                ),
+            )
+        except Exception:
             status = "numerical_failure"
             break
         dx_aff = sol_aff[:n]
@@ -147,8 +155,15 @@ def _solve_mehrotra_impl(
         bx_cor = -r_d + G.T @ (r_c_cor / s) - G.T @ (W * r_g)
         rhs_cor = np.concatenate([bx_cor, -r_p]) if m else bx_cor
         try:
-            sol = np.linalg.solve(K, rhs_cor)
-        except np.linalg.LinAlgError:
+            sol = factor_and_solve(
+                K,
+                rhs_cor,
+                LinearSolverOptions(
+                    backend=options.backend,  # type: ignore[arg-type]
+                    sparse_threshold=options.sparse_threshold,
+                ),
+            )
+        except Exception:
             status = "numerical_failure"
             break
         dx = sol[:n]
