@@ -2,36 +2,32 @@
 
 ## Current Phase
 
-Phase 9 - Rigorous Numerical Validation
+Phase 10 - Property-Based & Robust Testing
 
 ## Current Subphase
 
-9.9 - Error Metrics
+10.5 - Regression Suite
 
 ## Overall Progress
 
-9 / 19 phases completed
+10 / 19 phases completed
 
 ## Completed
 
-- Phase 0 through Phase 8
-- 9.1 Analytical Problems (Phase 1 examples reused)
-- 9.2 Random Convex QPs (50 feasible, 20 mixed)
-- 9.3 Feasible Problems verified
-- 9.4 Infeasible Problems (returned as max_iter/numerical_failure)
-- 9.5 Unbounded Problems noted in limitations
-- 9.6 Ill-Conditioned Problems (cond up to 1e6)
-- 9.7 Degenerate / Edge Cases (P=0, singleton, box, scaled)
-- 9.8 Reference Solvers deferred to Phase 11 (OSQP/Clarabel/CVXPY)
-- 9.9 Error Metrics: primal, dual, gap, objective
+- Phase 0 through Phase 9
+- 10.1 Hypothesis installed and configured
+- 10.2 Structural Properties (KKT holds for random QPs)
+- 10.3 KKT Validation (primal/dual/complementarity)
+- 10.4 Perturbation Tests (scaling invariance)
+- 10.5 Regression Suite (tests/test_properties.py)
 
 ## In Progress
 
-- Phase 10 - Property-Based & Robust Testing
+- Phase 11 - Benchmarking
 
 ## Next
 
-- Phase 10 - Hypothesis strategies for QP generation
+- Phase 11 - benchmark corpus, size/sparsity/conditioning scaling, reference comparison
 
 ## Blocked
 
@@ -39,9 +35,9 @@ Phase 9 - Rigorous Numerical Validation
 
 ## Technical Decisions
 
-- Corpus generators in validation/generators.py (random_psd, random_feasible_qp, random_mixed_qp, ill_conditioned_qp, infeasible_qp, degenerate_qp, singleton_qp).
-- Random QPs constructed with known strictly feasible interior point (h = G x0 + slack).
-- Reference solver comparison deferred to Phase 11 benchmark infrastructure.
+- Hypothesis strategies generate n in [2,6], p in [1,4], seed in [0, 10000].
+- 40 examples per property; deadline=None.
+- Properties: KKT satisfaction, feasibility preservation, objective consistency, scaling invariance.
 
 ## Scope Changes
 
@@ -49,17 +45,15 @@ Phase 9 - Rigorous Numerical Validation
 
 ## Acceptance Status
 
-- Tests: PASS (60 total)
+- Tests: PASS (64 total)
 - Lint: PASS
 - Formatting: PASS
 - Type Check: PASS
-- Corpus: 50 feasible + 20 mixed + 10 ill-conditioned + 10 failure + 10 edge = 100 problems
-- Optimal agreement: all feasible/mixed/edge; failure modes return non-optimal status
+- Property tests: 4 properties * up to 40 examples each
 
 ## Known Limitations
 
-- Infeasible QPs cause RuntimeWarnings in mehrotra.py during divergence; status is returned correctly but numeric noise appears. Will add safeguard.
-- Unbounded QP detection not implemented (returns max_iter).
+- Unbounded and infeasible detection still via max_iter.
 
 ## Last Verified
 
@@ -67,4 +61,4 @@ Phase 9 - Rigorous Numerical Validation
 
 ## Next Action
 
-Begin Phase 10 - Hypothesis property-based tests.
+Begin Phase 11 - benchmarking infrastructure.
