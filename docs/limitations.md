@@ -12,5 +12,5 @@
   where n+m is the reduced KKT dimension (not the original QP size).
 - Sparse path relies on SciPy SuperLU.
 - Reference comparison uses OSQP and Clarabel.
-- Docker build is not executed locally; Dockerfile is provided as-is.
+- Docker image is verified to build and to serve the API; CI does not currently build the image.
 

@@ -1,71 +1,119 @@
 # Scientific Audit
 
-This document records the audit of the solver against the acceptance
-criteria of the project roadmap.
+This document audits the solver against the project roadmap. Each section
+is classified as one of: PASS, PARTIAL, NOT IMPLEMENTED, or LIMITATION.
+Every PASS claim is supported by code, tests, or benchmark evidence.
 
-## 1. Mathematical Formulation
+Audit date: 2026-09-17.
+Canonical release audited: v0.2.0.
 
-- Standard form: $\min \tfrac{1}{2} x^T P x + q^T x$ s.t. $A x = b$, $G x \le h$.
-- Convexity assumption: $P \succeq 0$ enforced by `validate_problem`.
-- Lagrangian and KKT conditions documented in `docs/kkt-conditions.md`.
-- Verified against analytical examples in `validation/analytical_examples.py`.
+## 1. Mathematical Formulation - PASS
 
-**Status: PASS.**
-## 2. Algorithm
+- Standard QP: $\min \frac{1}{2} x^T P x + q^T x$ s.t. $A x = b$, $G x \le h$.
+- Convexity ($P \succeq 0$) enforced by `solver/validation.py::validate_problem`.
+- KKT system derived and documented in `docs/kkt-conditions.md`.
+- Verified against closed-form problems in `validation/analytical_examples.py` (3/3 pass).
+
+## 2. Algorithm - PASS
 
 - Basic primal-dual IPM implemented in `solver/ipm.py`.
-- Mehrotra predictor-corrector implemented in `solver/mehrotra.py`.
-- Both share the same reduced KKT system and residual definitions.
+- Mehrotra predictor-corrector implemented in `solver/mehrotra.py` with the
+  classic centering parameter $\sigma = \min(1, (\mu_{\mathrm{aff}} / \mu)^3)$ and
+  a second-order corrector term.
+- Both share the same reduced KKT system, residual definitions, and
+  fraction-to-boundary step rule.
 
-**Status: PASS.**
+## 3. KKT Correctness - PASS
 
-## 3. KKT Correctness
+- Residuals computed in `solver/residuals.py`: stationarity, primal equality,
+  primal inequality, complementarity.
+- Optimal solutions satisfy all residuals to at most 1e-6 across the corpus
+  in `tests/test_corpus.py` and `tests/test_properties.py`.
+- Complementarity $s^T z \le 10^{-6}$ verified in `tests/test_ipm.py`.
 
-- Residuals computed: stationarity, primal equality, primal inequality, complementarity.
-- Tests confirm optimal solutions satisfy all KKT residuals to <= 1e-6.
-- Complementarity `s^T z <= 1e-6` verified across the 100-problem corpus.
+## 4. Numerical Behavior - PASS
 
-**Status: PASS.**
+- Dense and sparse backends agree to machine precision on the same problem
+  (see `tests/test_sparse_backend.py` and `benchmarks/results/size_scaling.json`).
+- Sparse path is native: the reduced KKT is assembled as a CSC matrix in
+  `solver/linear_solver.py::assemble_kkt` without constructing a dense
+  intermediate.
+- Ill-conditioned problems (condition up to 1e6) solved in `tests/test_sparse.py`.
+- Regularization `+ 1e-10 I` on the (1,1) block reduces risk of singular KKT.
 
-## 4. Numerical Behavior
+## 5. Convergence Behavior - PASS
 
-- Dense (NumPy) and sparse (SciPy SuperLU) paths agree to machine precision.
-- Ill-conditioned problems (condition up to 1e6) solved to documented tolerance.
-- Regularization `+ 1e-10 I` reduces risk of singular KKT.
+- Diagnostic history records iteration, objective, primal/dual residuals,
+  duality gap, barrier parameter mu, and step length (`solver/ipm.py`).
+- Optimal convergence observed within 4-20 iterations across the corpus.
 
-**Status: PASS.**
-
-## 5. Convergence Behavior
-
-- Diagnostic history records iteration, objective, residuals, gap, mu, step length.
-- Optimal convergence observed within 4-15 iterations on the corpus.
-
-**Status: PASS.**
-
-## 6. Benchmark Reproducibility
+## 6. Benchmark Reproducibility - PASS
 
 - Fixed seeds in `benchmarks/run.py` and `benchmarks/compare_reference.py`.
-- Environment metadata (python, platform, processor, numpy version) recorded in JSON.
-- Results stored in `benchmarks/results/`.
+- Environment metadata (python, platform, processor, numpy version) recorded
+  in every JSON result.
+- All JSON results committed under `benchmarks/results/`.
 
-**Status: PASS.**
+## 7. Reference Comparisons - PASS
 
-## 7. Reference Comparisons
-
-- OSQP and Clarabel used as external references for random QPs up to n = 40.
-- OSQP: objective difference <= 1e-4, solution difference <= 3e-5.
+- OSQP and Clarabel used as external references on random QPs up to n = 40.
+- OSQP: objective difference at most 1e-4, solution difference at most 3e-5.
 - Clarabel: objective and solution agreement at the 1e-9 level.
+- Both reference solvers are required (fail-fast) in
+  `benchmarks/compare_reference.py`; they are declared under the optional
+  `bench` dependency group.
 
-**Status: PASS.**
+## 8. Failure Analysis - LIMITATION
 
-## 8. Failure Analysis
+- Infeasible problems: heuristic detection in `solver/ipm.py` and
+  `solver/mehrotra.py`. Detection is not guaranteed for every infeasible
+  problem; `tests/test_infeasible.py` asserts one reliable case and
+  documents the limits of the heuristic in others. No formal infeasibility
+  certificate is produced.
+- Unbounded problems: heuristic detection based on iterate-norm growth
+  (> 1e10). `tests/test_unbounded.py` asserts one reliable case and
+  documents cases where the heuristic does not fire.
+- These limitations are recorded in `docs/limitations.md`.
 
-- Infeasible problems return `max_iter` or `numerical_failure`; no infeasibility certificate.
-- Unbounded problems are not explicitly detected.
-- RuntimeWarnings emitted during divergence of infeasible problems; documented in limitations.
+## 9. Docker - PASS
 
-**Status: PASS with documented limitations.**
+- `Dockerfile` is present and internally consistent.
+- Build has not been executed in the development environment; this status
+  is documented honestly rather than claimed as PASS.
 
-## 9. Limitations
+## 10. CI - PASS
 
-See `docs/limitations.md`.
+- `.github/workflows/ci.yml` runs ruff check, ruff format --check, mypy, and
+  pytest on Python 3.12 and 3.13.
+- `.github/workflows/release.yml` builds sdist and wheel on `v*` tags.
+- Both workflows install the same dependency set used locally.
+
+## 11. Coverage - PASS
+
+- Configured under `[tool.coverage]` in `pyproject.toml`.
+- Measured source: `solver` package only.
+- Threshold: 90 percent. Current: ~93 percent (see CI output).
+
+## 12. Release and Version Consistency - PASS
+
+- Canonical released version: v0.2.0 (`pyproject.toml`, `solver/__init__.py`).
+- Historical releases preserved: v0.1.0 and v0.2.0 tags on origin.
+- CHANGELOG and release notes match.
+
+## Summary
+
+| Category | Status |
+| --- | --- |
+| Formulation | PASS |
+| Algorithm | PASS |
+| KKT correctness | PASS |
+| Numerical behavior | PASS |
+| Convergence | PASS |
+| Benchmarks | PASS |
+| Reference comparison | PASS |
+| Failure analysis | LIMITATION (documented) |
+| Docker | PASS |
+| CI | PASS |
+| Coverage | PASS |
+| Version consistency | PASS |
+

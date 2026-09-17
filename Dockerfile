@@ -2,6 +2,11 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
+ENV PIP_DEFAULT_TIMEOUT=120 \
+    PIP_RETRIES=10 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
 COPY pyproject.toml README.md LICENSE ./
 COPY solver ./solver
 COPY validation ./validation
