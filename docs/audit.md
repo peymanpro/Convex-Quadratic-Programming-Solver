@@ -83,10 +83,11 @@ Canonical release audited: v0.2.0.
 
 ## 10. CI - PASS
 
-- `.github/workflows/ci.yml` runs ruff check, ruff format --check, mypy, and
-  pytest on Python 3.12 and 3.13.
+- `.github/workflows/ci.yml` has three jobs:
+  (a) quality: ruff check, ruff format --check, mypy, pytest with coverage on Python 3.12 and 3.13;
+  (b) docker: builds the Dockerfile and verifies /api/v1/health/ and /api/v1/version/ respond;
+  (c) reference-benchmark: installs the optional bench group and runs `python -m benchmarks.compare_reference`.
 - `.github/workflows/release.yml` builds sdist and wheel on `v*` tags.
-- Both workflows install the same dependency set used locally.
 
 ## 11. Coverage - PASS
 
