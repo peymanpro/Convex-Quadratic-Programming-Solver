@@ -12,5 +12,6 @@
   where n+m is the reduced KKT dimension (not the original QP size).
 - Sparse path relies on SciPy SuperLU.
 - Reference comparison uses OSQP and Clarabel.
-- Docker image is verified to build and to serve the API; CI does not currently build the image.
+- Docker image is verified by GitHub Actions CI: the image builds and serves
+  the health and version endpoints.
 

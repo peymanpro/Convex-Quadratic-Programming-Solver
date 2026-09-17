@@ -77,9 +77,12 @@ Canonical release audited: v0.2.0.
 
 ## 9. Docker - PASS
 
-- `Dockerfile` is present and internally consistent.
-- Build has not been executed in the development environment; this status
-  is documented honestly rather than claimed as PASS.
+- The Dockerfile is present and internally consistent.
+- Docker verification is provided by GitHub Actions CI: the image was
+  successfully built and the container health and version endpoints were
+  verified in the `docker` CI job.
+- Local development-environment Docker execution is not the evidence used
+  for this PASS claim.
 
 ## 10. CI - PASS
 
@@ -98,7 +101,7 @@ Canonical release audited: v0.2.0.
 ## 12. Release and Version Consistency - PASS
 
 - Canonical released version: v0.2.0 (`pyproject.toml`, `solver/__init__.py`).
-- Historical releases preserved: v0.1.0 and v0.2.0 tags on origin.
+- Current release: v0.2.0. Previous release: v0.1.0.
 - CHANGELOG and release notes match.
 
 ## Summary
