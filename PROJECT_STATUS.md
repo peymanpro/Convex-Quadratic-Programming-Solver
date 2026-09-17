@@ -2,35 +2,37 @@
 
 ## Current Phase
 
-Phase 3 - Equality-Constrained QP
+Phase 4 - Inequality Constraints & Slack Variables
 
 ## Current Subphase
 
-3.6 - Reference Comparison
+4.6 - Numerical Tests
 
 ## Overall Progress
 
-3 / 19 phases completed
+4 / 19 phases completed
 
 ## Completed
 
 - Phase 0 - Project Definition & Development Foundation
 - Phase 1 - Mathematical Foundations
 - Phase 2 - Problem Model & Validation
-- 3.1 Equality-Constrained KKT System
-- 3.2 Dense Linear Algebra
-- 3.3 Solution Extraction
-- 3.4 Residual Calculation
-- 3.5 Analytical Test Problems (5 problems)
-- 3.6 Reference Comparison (analytical closed-form)
+- Phase 3 - Equality-Constrained QP
+- 4.1 Slack Variables
+- 4.2 Primal/Dual Variables
+- 4.3 Central Path
+- 4.4 Barrier Parameter
+- 4.5 Perturbed KKT System
+- 4.6 Numerical Tests (10 constrained QPs)
 
 ## In Progress
 
-- Phase 4 - Inequality Constraints & Slack Variables
+- Phase 5 - Primal-Dual Interior-Point Method (basic IPM already implemented; refinements next)
 
 ## Next
 
-- Phase 4 - slack variables, central path, barrier parameter
+- Phase 5 - diagnostics, stopping criteria, failure states
+- Phase 6 - Mehrotra predictor-corrector
 
 ## Blocked
 
@@ -38,11 +40,13 @@ Phase 3 - Equality-Constrained QP
 
 ## Technical Decisions
 
-- KKT matrix assembled densely: K = [[P, A^T], [A, 0]].
-- Solve via numpy.linalg.solve; sparse path deferred to Phase 7.
-- Residuals module: stationarity, primal_eq, primal_iq, complementarity.
-- Ruff N803 added to global ignores (math notation arguments P, A, G, b, h).
-- Tests: analytical expected solutions validated against computed.
+- Slack form: G x + s = h, s > 0, with dual z > 0.
+- Reduced KKT via W = diag(z)/diag(s).
+- Newton RHS: bx = -r_d + G^T (r_c / s) - G^T (W r_g), with r_c = s*z - sigma*mu.
+- dz = (-r_c - z*ds)/s (sign corrected during debugging).
+- Fraction-to-boundary with eta = 0.995.
+- Equality-only path uses a single dense KKT solve.
+- Regularization: +1e-10 * I on H block.
 
 ## Scope Changes
 
@@ -50,19 +54,20 @@ Phase 3 - Equality-Constrained QP
 
 ## Acceptance Status
 
-- Tests: PASS (16 tests)
+- Tests: PASS (10 IPM tests + prior)
 - Lint: PASS
 - Formatting: PASS
 - Type Check: PASS
 - Coverage (solver): ~90 percent
-- Analytical equality QPs solved: 5/5 with KKT residuals <= 1e-9
+- Constrained QPs solved: 10/10 with status optimal
+- Complementarity <= 1e-6 verified
+- Duality gap <= 1e-6 verified
 - Benchmarks: Not yet implemented
-- Reference Comparisons: analytical closed-form
-- Documentation: mathematical-formulation.md, kkt-conditions.md, analytical-examples.md
 
 ## Known Limitations
 
-- Only dense KKT path implemented (Phase 7 adds sparse).
+- Basic IPM only (Mehrotra predictor-corrector arrives in Phase 6).
+- Dense KKT only (sparse in Phase 7).
 
 ## Last Verified
 
@@ -70,4 +75,4 @@ Phase 3 - Equality-Constrained QP
 
 ## Next Action
 
-Begin Phase 4 - slack variables and central path formulation.
+Begin Phase 5 - refine diagnostics, stopping criteria, failure states.
