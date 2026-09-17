@@ -2,11 +2,11 @@
 
 ## Current Phase
 
-Phase 1 - Mathematical Foundations
+Phase 2 - Problem Model & Validation
 
 ## Current Subphase
 
-1.6 - Documentation
+2.6 - Unit Tests
 
 ## Overall Progress
 
@@ -15,20 +15,21 @@ Phase 1 - Mathematical Foundations
 ## Completed
 
 - Phase 0 - Project Definition & Development Foundation
-- 1.1 Convexity
-- 1.2 Standard QP Formulation
-- 1.3 Lagrangian
-- 1.4 KKT Conditions
-- 1.5 Optimality Interpretation
-- 1.6 Documentation
+- Phase 1 - Mathematical Foundations
+- 2.1 Problem Representation
+- 2.2 Shape Validation
+- 2.3 Convexity Validation
+- 2.4 Numerical Input Validation
+- 2.5 Domain Exceptions
+- 2.6 Unit Tests
 
 ## In Progress
 
-- Phase 1 acceptance verification
+- Phase 2 acceptance verification
 
 ## Next
 
-- Phase 2 - Problem Model & Validation
+- Phase 3 - Equality-Constrained QP
 
 ## Blocked
 
@@ -37,9 +38,9 @@ Phase 1 - Mathematical Foundations
 ## Technical Decisions
 
 - Python 3.12 (required by numpy 2.x type stubs); requires-python >= 3.12.
-- Ruff N806 ignored: matrix names P, A, G follow mathematical notation.
-- Setuptools packages: solver (core) and validation (analytical examples).
-- Documentation uses $$ ... $$ for block math (GitHub MathJax compatible).
+- QPProblem is a frozen dataclass with numpy float64 arrays.
+- Exceptions follow roadmap names (InvalidProblem, NonConvexProblem, DimensionMismatch, NumericalFailure, InfeasibleProblem, UnboundedProblem) - ruff N818 ignored for solver/exceptions.py.
+- Ruff N806 ignored globally (math matrix names P, A, G), N802 ignored in tests (test names embed math notation).
 
 ## Scope Changes
 
@@ -47,11 +48,11 @@ Phase 1 - Mathematical Foundations
 
 ## Acceptance Status
 
-- Tests: PASS
+- Tests: PASS (11 tests)
 - Lint: PASS
 - Formatting: PASS
 - Type Check: PASS
-- Coverage: Not yet measured
+- Coverage (solver pkg): 91 percent
 - Benchmarks: Not yet implemented
 - Reference Comparisons: Not yet implemented
 - Documentation: mathematical-formulation.md, kkt-conditions.md, analytical-examples.md
@@ -67,4 +68,4 @@ Phase 1 - Mathematical Foundations
 
 ## Next Action
 
-Begin Phase 2 - typed QP problem model and validation.
+Begin Phase 3 - equality-constrained KKT system.
