@@ -68,8 +68,10 @@ from solver import QPProblem, solve
 problem = QPProblem(
     P=np.eye(2),
     q=np.array([-2.0, -3.0]),
-    A=np.zeros((0, 2)), b=np.zeros(0),
-    G=np.array([[1.0, 1.0]]), h=np.array([2.0]),
+    A=np.zeros((0, 2)),
+    b=np.zeros(0),
+    G=np.array([[1.0, 1.0]]),
+    h=np.array([2.0]),
 )
 result = solve(problem)
 print(result.status, result.x, result.objective)
