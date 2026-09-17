@@ -2,33 +2,34 @@
 
 ## Current Phase
 
-Phase 18 - Final Scientific Audit
+Phase 19 - Flagship Release
 
 ## Current Subphase
 
-18.6 - Failure Analysis
+19.7 - Repository Cleanup
 
 ## Overall Progress
 
-18 / 19 phases completed
+19 / 19 phases completed
 
 ## Completed
 
-- Phase 0 through Phase 17
-- 18.1 Mathematical Audit
-- 18.2 Algorithm Audit
-- 18.3 Numerical Audit
-- 18.4 Benchmark Audit
-- 18.5 Reference Comparison Audit
-- 18.6 Failure Analysis
+- Phase 0 through Phase 18
+- 19.1 README Finalization
+- 19.2 Benchmark Report (docs/benchmark-report.md)
+- 19.3 Architecture Diagram (docs/architecture.md)
+- 19.4 Example Gallery (examples/README.md)
+- 19.5 Release Notes (docs/release-notes-v0.1.0.md)
+- 19.6 Version Tag (v0.1.0)
+- 19.7 Repository Cleanup
 
 ## In Progress
 
-- Phase 19 - Flagship Release
+- Release push to origin
 
 ## Next
 
-- Phase 19 - finalize README, benchmark report, release tag v0.1.0
+- Maintain and extend (Clarabel reference, infeasibility certificate, unbounded detection)
 
 ## Blocked
 
@@ -36,7 +37,8 @@ Phase 18 - Final Scientific Audit
 
 ## Technical Decisions
 
-- Audit document at docs/audit.md.
+- Released as v0.1.0 (semantic versioning).
+- All acceptance criteria satisfied.
 
 ## Scope Changes
 
@@ -49,7 +51,10 @@ Phase 18 - Final Scientific Audit
 - Formatting: PASS
 - Type Check: PASS
 - Coverage (solver): 96 percent
-- Audit: PASS with documented limitations
+- Analytical KKT checks: 3/3 pass
+- Reference (OSQP): PASS
+- Benchmarks: reproducible, JSON recorded
+- Documentation: complete set in docs/ and README
 
 ## Known Limitations
 
@@ -61,4 +66,4 @@ Phase 18 - Final Scientific Audit
 
 ## Next Action
 
-Begin Phase 19 - flagship release preparation.
+Push main and tag v0.1.0 to origin.
