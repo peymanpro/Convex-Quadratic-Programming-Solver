@@ -87,7 +87,7 @@ def _solve_equality_only(
     )
 
 
-def solve_ipm(
+def _solve_ipm_impl(
     problem: QPProblem,
     options: IPMOptions | None = None,
 ) -> IPMResult:
@@ -129,7 +129,19 @@ def solve_ipm(
         r_d = r_d + G.T @ z
         r_p = A @ x - b if m else np.zeros(0)
         r_g = G @ x + s - h
+        if not (
+            np.all(np.isfinite(x))
+            and np.all(np.isfinite(s))
+            and np.all(np.isfinite(z))
+            and np.all(np.isfinite(r_d))
+            and np.all(np.isfinite(r_g))
+        ):
+            status = "numerical_failure"
+            break
         mu = float(s @ z) / p
+        if mu < 0 or not np.isfinite(mu):
+            status = "numerical_failure"
+            break
         r_c = s * z - options.sigma * mu * np.ones(p)
 
         res = compute_residuals(P, q, A, b, G, h, x, y, z)
@@ -200,3 +212,15 @@ def solve_ipm(
         duality_gap=float(s @ z),
         history=history,
     )
+
+
+def solve_ipm(
+    problem: QPProblem,
+    options: IPMOptions | None = None,
+) -> IPMResult:
+    """Wrapper suppressing floating-point warnings during divergence."""
+    old = np.seterr(invalid="ignore", divide="ignore", over="ignore")
+    try:
+        return _solve_ipm_impl(problem, options)
+    finally:
+        np.seterr(**old)

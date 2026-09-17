@@ -28,7 +28,7 @@ def _build_reduced_kkt(
     return K
 
 
-def solve_mehrotra(
+def _solve_mehrotra_impl(
     problem: QPProblem,
     options: IPMOptions | None = None,
 ) -> IPMResult:
@@ -67,7 +67,24 @@ def solve_mehrotra(
         r_d = r_d + G.T @ z
         r_p = A @ x - b if m else np.zeros(0)
         r_g = G @ x + s - h
+        if not (
+            np.all(np.isfinite(x))
+            and np.all(np.isfinite(s))
+            and np.all(np.isfinite(z))
+            and np.all(np.isfinite(r_d))
+            and np.all(np.isfinite(r_g))
+        ):
+            status = "numerical_failure"
+            break
         mu = float(s @ z) / p
+        if (
+            mu < 0
+            or not np.isfinite(mu)
+            or float(np.min(s)) <= 1e-300
+            or float(np.min(z)) <= 1e-300
+        ):
+            status = "numerical_failure"
+            break
 
         res = compute_residuals(P, q, A, b, G, h, x, y, z)
         history.append(
@@ -118,6 +135,14 @@ def solve_mehrotra(
         sigma = float(min(1.0, max(0.0, (mu_aff / mu) ** 3))) if mu > 0 else 0.0
 
         # --- Corrector ---
+        if not (
+            np.all(np.isfinite(s_aff))
+            and np.all(np.isfinite(z_aff))
+            and np.isfinite(mu_aff)
+            and np.isfinite(sigma)
+        ):
+            status = "numerical_failure"
+            break
         r_c_cor = s * z + ds_aff * dz_aff - sigma * mu * np.ones(p)
         bx_cor = -r_d + G.T @ (r_c_cor / s) - G.T @ (W * r_g)
         rhs_cor = np.concatenate([bx_cor, -r_p]) if m else bx_cor
@@ -159,3 +184,15 @@ def solve_mehrotra(
         duality_gap=float(s @ z),
         history=history,
     )
+
+
+def solve_mehrotra(
+    problem: QPProblem,
+    options: IPMOptions | None = None,
+) -> IPMResult:
+    """Wrapper suppressing floating-point warnings during divergence."""
+    old = np.seterr(invalid="ignore", divide="ignore", over="ignore")
+    try:
+        return _solve_mehrotra_impl(problem, options)
+    finally:
+        np.seterr(**old)
