@@ -2,32 +2,33 @@
 
 ## Current Phase
 
-Phase 15 - Packaging & Developer Experience
+Phase 16 - Documentation
 
 ## Current Subphase
 
-15.5 - One-command startup
+16.6 - Limitations
 
 ## Overall Progress
 
-15 / 19 phases completed
+16 / 19 phases completed
 
 ## Completed
 
-- Phase 0 through Phase 14
-- 15.1 Python Package (editable install via pip install -e .)
-- 15.2 Optional CLI (cqp-solve solver.cli:main)
-- 15.3 Configuration via pyproject.toml
-- 15.4 Docker (Dockerfile for API)
-- 15.5 One-command startup (Dockerfile CMD + python -m ...)
+- Phase 0 through Phase 15
+- 16.1 README (rewritten: problem, method, features, install, quick start, CLI, API)
+- 16.2 Mathematical Documentation: mathematical-formulation.md, kkt-conditions.md, interior-point-method.md, mehrotra-algorithm.md
+- 16.3 Numerical Documentation: numerical-methods.md, validation.md
+- 16.4 Benchmark Documentation: benchmarks.md
+- 16.5 Architecture: architecture.md
+- 16.6 Limitations: limitations.md
 
 ## In Progress
 
-- Phase 16 - Documentation
+- Phase 17 - Production-quality Engineering
 
 ## Next
 
-- Phase 16 - README, docs, architecture, limitations
+- Phase 17 - coverage measurement, CI matrix, release workflow
 
 ## Blocked
 
@@ -35,10 +36,9 @@ Phase 15 - Packaging & Developer Experience
 
 ## Technical Decisions
 
-- CLI entry point: cqp-solve (solver.cli:main).
-- Dockerfile targets Django API on port 8000.
-- Sample QP JSON at examples/halfplane.json.
-- CLI test uses pytest CaptureFixture for typed output.
+- README concise; deep material in docs/.
+- All math in $$ ... $$ for GitHub MathJax.
+- Docs describe actual implemented behavior only.
 
 ## Scope Changes
 
@@ -50,12 +50,11 @@ Phase 15 - Packaging & Developer Experience
 - Lint: PASS
 - Formatting: PASS
 - Type Check: PASS
-- CLI: verified via cqp-solve examples/halfplane.json
-- Docker: Dockerfile present (build not run in this environment)
+- Documentation: complete set in docs/ and README
 
 ## Known Limitations
 
-- Docker build not verified locally (no Docker daemon).
+- Documented in docs/limitations.md
 
 ## Last Verified
 
@@ -63,4 +62,4 @@ Phase 15 - Packaging & Developer Experience
 
 ## Next Action
 
-Begin Phase 16 - finalize README, add architecture.md, numerical-methods.md, limitations.md, benchmarks.md.
+Begin Phase 17 - coverage and CI matrix.
