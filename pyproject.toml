@@ -64,3 +64,15 @@ DJANGO_SETTINGS_MODULE = "qp_api.settings"
 pythonpath = ["api"]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
+[tool.coverage.run]
+source = ["solver"]
+omit = ["solver/__init__.py"]
+
+[tool.coverage.report]
+fail_under = 90
+exclude_lines = [
+    "pragma: no cover",
+    "if __name__ == .__main__.:",
+    "raise NotImplementedError",
+]
+

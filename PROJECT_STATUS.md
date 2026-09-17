@@ -2,33 +2,33 @@
 
 ## Current Phase
 
-Phase 16 - Documentation
+Phase 17 - Production-quality Engineering
 
 ## Current Subphase
 
-16.6 - Limitations
+17.6 - Semantic Versioning
 
 ## Overall Progress
 
-16 / 19 phases completed
+17 / 19 phases completed
 
 ## Completed
 
-- Phase 0 through Phase 15
-- 16.1 README (rewritten: problem, method, features, install, quick start, CLI, API)
-- 16.2 Mathematical Documentation: mathematical-formulation.md, kkt-conditions.md, interior-point-method.md, mehrotra-algorithm.md
-- 16.3 Numerical Documentation: numerical-methods.md, validation.md
-- 16.4 Benchmark Documentation: benchmarks.md
-- 16.5 Architecture: architecture.md
-- 16.6 Limitations: limitations.md
+- Phase 0 through Phase 16
+- 17.1 Type Checking (mypy strict, api excluded)
+- 17.2 Code Quality (ruff lint + format)
+- 17.3 Coverage Measurement (solver package 96 percent, fail_under 90)
+- 17.4 CI Matrix (Python 3.12 and 3.13, lint + format + mypy + pytest)
+- 17.5 Release Workflow (build sdist and wheel on v* tags)
+- 17.6 Semantic Versioning (0.1.0)
 
 ## In Progress
 
-- Phase 17 - Production-quality Engineering
+- Phase 18 - Final Scientific Audit
 
 ## Next
 
-- Phase 17 - coverage measurement, CI matrix, release workflow
+- Phase 18 - audit formulation, KKT, algorithm, numerics, benchmarks
 
 ## Blocked
 
@@ -36,9 +36,9 @@ Phase 16 - Documentation
 
 ## Technical Decisions
 
-- README concise; deep material in docs/.
-- All math in $$ ... $$ for GitHub MathJax.
-- Docs describe actual implemented behavior only.
+- Coverage scoped to solver package with fail_under = 90.
+- CI matrix: 3.12 and 3.13.
+- Release workflow uploads dist artifacts on tag push.
 
 ## Scope Changes
 
@@ -50,11 +50,11 @@ Phase 16 - Documentation
 - Lint: PASS
 - Formatting: PASS
 - Type Check: PASS
-- Documentation: complete set in docs/ and README
+- Coverage (solver): 96 percent (target >= 90)
 
 ## Known Limitations
 
-- Documented in docs/limitations.md
+- 2 RuntimeWarnings from infeasible test cases (documented).
 
 ## Last Verified
 
@@ -62,4 +62,4 @@ Phase 16 - Documentation
 
 ## Next Action
 
-Begin Phase 17 - coverage and CI matrix.
+Begin Phase 18 - scientific audit.
