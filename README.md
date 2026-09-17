@@ -1,7 +1,23 @@
 # Convex Quadratic Programming Solver
 
+![CI](https://github.com/peymanpro/Convex-Quadratic-Programming-Solver/actions/workflows/ci.yml/badge.svg)
+![Release](https://img.shields.io/github/v/tag/peymanpro/Convex-Quadratic-Programming-Solver?label=release)
+![Python](https://img.shields.io/badge/python-3.12%2B-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+
 A research-oriented Python implementation of a **primal-dual interior-point solver**
 for **convex quadratic programming**, with a Django REST API.
+
+## Status
+
+| Metric | Value |
+| --- | --- |
+| Version | v0.1.0 |
+| Tests | 79 passing |
+| Coverage (solver) | 96% |
+| Lint / Format | ruff clean |
+| Type check | mypy strict (solver, validation) |
+| References | OSQP and Clarabel agreement |
 
 ## Problem
 
@@ -18,8 +34,9 @@ $G \in \mathbb{R}^{p \times n}$.
 ## Method
 
 - Primal-dual interior-point with a **Mehrotra predictor-corrector** step.
-- Reduced KKT system solved via direct dense (NumPy) or sparse (SciPy SuperLU) factorization.
+- Reduced KKT system solved via dense (NumPy) or sparse (SciPy SuperLU) factorization.
 - Fraction-to-boundary step length and adaptive centering parameter.
+
 ## Features
 
 - Standard convex QP formulation with equality and inequality constraints.
@@ -27,10 +44,12 @@ $G \in \mathbb{R}^{p \times n}$.
 - KKT residual diagnostics: stationarity, primal feasibility, complementarity, duality gap.
 - Dense and sparse KKT paths (scipy.sparse.linalg.splu / SuperLU).
 - Input validation: shapes, symmetry, positive semidefiniteness, finiteness.
+- Heuristic detection of infeasible and unbounded problems.
 - Property-based tests (Hypothesis) and numerical validation corpus (100+ problems).
-- Reference comparison against OSQP (benchmarks/compare_reference.py).
+- Reference comparison against OSQP and Clarabel.
 - CLI: cqp-solve problem.json.
 - Django REST API with OpenAPI/Swagger.
+
 
 ## Installation
 
@@ -49,10 +68,8 @@ from solver import QPProblem, solve
 problem = QPProblem(
     P=np.eye(2),
     q=np.array([-2.0, -3.0]),
-    A=np.zeros((0, 2)),
-    b=np.zeros(0),
-    G=np.array([[1.0, 1.0]]),
-    h=np.array([2.0]),
+    A=np.zeros((0, 2)), b=np.zeros(0),
+    G=np.array([[1.0, 1.0]]), h=np.array([2.0]),
 )
 result = solve(problem)
 print(result.status, result.x, result.objective)
@@ -64,7 +81,6 @@ print(result.status, result.x, result.objective)
 cqp-solve examples\halfplane.json
 ```
 
-
 ## REST API
 
 ```powershell
@@ -73,12 +89,12 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-- `GET  /api/v1/health/`      liveness probe
-- `GET  /api/v1/version/`     solver version
-- `GET  /api/v1/examples/`    example payloads
-- `POST /api/v1/solve/qp/`    solve a convex QP
-- `GET  /api/docs/`           Swagger UI
-- `GET  /api/schema/`         OpenAPI schema
+- GET  /api/v1/health/      liveness probe
+- GET  /api/v1/version/     solver version
+- GET  /api/v1/examples/    example payloads
+- POST /api/v1/solve/qp/    solve a convex QP
+- GET  /api/docs/           Swagger UI
+- GET  /api/schema/         OpenAPI schema
 
 ## Testing
 
@@ -92,11 +108,11 @@ mypy .
 ## Benchmarks
 
 ```powershell
-python -m benchmarks.run              # size scaling
-python -m benchmarks.compare_reference  # vs OSQP
+python -m benchmarks.run
+python -m benchmarks.compare_reference
 ```
 
-Results are written to `benchmarks/results/`.
+Results are written to benchmarks/results/.
 
 ## Project Structure
 
@@ -112,12 +128,32 @@ tests/         unit, integration, property-based, and API tests
 
 ## Documentation
 
-- `docs/mathematical-formulation.md`
-- `docs/kkt-conditions.md`
-- `docs/analytical-examples.md`
-- `docs/interior-point-method.md`
+- docs/mathematical-formulation.md
+- docs/kkt-conditions.md
+- docs/interior-point-method.md
+- docs/mehrotra-algorithm.md
+- docs/numerical-methods.md
+- docs/validation.md
+- docs/benchmarks.md
+- docs/benchmark-report.md
+- docs/architecture.md
+- docs/audit.md
+- docs/limitations.md
 
 ## License
 
-MIT. See `LICENSE`.
+MIT. See LICENSE.
+
+
+## Architecture
+
+```mermaid
+graph TD
+    CLI[cqp-solve CLI] --> API
+    REST[Django REST API] --> API
+    API[solver.solve] --> IPM[ipm.py / mehrotra.py]
+    IPM --> KKT[kkt.py / linear_solver.py]
+    IPM --> RES[residuals.py]
+    KKT --> PROB[problem.py / validation.py / exceptions.py]
+```
 
