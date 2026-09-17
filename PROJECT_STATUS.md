@@ -2,15 +2,15 @@
 
 ## Current Phase
 
-Phase 7 - Numerical Linear Algebra & Sparse KKT
+Phase 8 - Solver API & Public Python Interface
 
 ## Current Subphase
 
-7.6 - Numerical Safeguards
+8.5 - Stable Public Interfaces
 
 ## Overall Progress
 
-7 / 19 phases completed
+8 / 19 phases completed
 
 ## Completed
 
@@ -21,20 +21,20 @@ Phase 7 - Numerical Linear Algebra & Sparse KKT
 - Phase 4 - Inequality Constraints & Slack Variables
 - Phase 5 - Primal-Dual Interior-Point Method
 - Phase 6 - Mehrotra Predictor-Corrector
-- 7.1 KKT Structure Analysis
-- 7.2 Sparse Matrix Representation (scipy CSC)
-- 7.3 Sparse Linear Solve (SuperLU via scipy.sparse.linalg.splu)
-- 7.4 Dense vs Sparse equivalence test
-- 7.5 Numerical Conditioning (ill-conditioned tests)
-- 7.6 Numerical Safeguards (regularization, failure detection)
+- Phase 7 - Numerical Linear Algebra & Sparse KKT
+- 8.1 Public API: solve(problem)
+- 8.2 Solver Configuration (IPMOptions)
+- 8.3 Result Object (SolverResult)
+- 8.4 Diagnostics Object (result.diagnostics, history dicts)
+- 8.5 Stable Public Interfaces (solver/__init__.py __all__)
 
 ## In Progress
 
-- Phase 8 - Solver API & Public Python Interface
+- Phase 9 - Rigorous Numerical Validation
 
 ## Next
 
-- Phase 8 - public solve(), SolverConfig, Result object
+- Phase 9 - analytical corpus, random QPs, ill-conditioned, failure modes, reference comparisons
 
 ## Blocked
 
@@ -42,12 +42,11 @@ Phase 7 - Numerical Linear Algebra & Sparse KKT
 
 ## Technical Decisions
 
-- Sparse KKT built with scipy.sparse.bmat and csc format.
-- Sparse factor: scipy.sparse.linalg.splu (SuperLU).
-- LinearSolverOptions.backend in {dense, sparse}; auto via sparse_threshold.
-- mypy override: scipy.* ignore_missing_imports = true (no stubs).
-- Regularization default 1e-10 on H block.
-- Singular matrices raise NumericalFailure.
+- Public function: solver.solve(problem, *, method="mehrotra", options=None).
+- Default method: mehrotra. Alternative: ipm.
+- SolverResult includes status, x, objective, iterations, primal_residual, dual_residual, duality_gap, solve_time, y, z, s, diagnostics.
+- solve() runs validate_problem() before dispatch (raises InvalidProblem, NonConvexProblem, DimensionMismatch).
+- Three executable examples: portfolio, resource_allocation, svm_dual.
 
 ## Scope Changes
 
@@ -55,19 +54,17 @@ Phase 7 - Numerical Linear Algebra & Sparse KKT
 
 ## Acceptance Status
 
-- Tests: PASS (46 total)
+- Tests: PASS (54 total)
 - Lint: PASS
 - Formatting: PASS
 - Type Check: PASS
 - Coverage (solver): ~90 percent
-- Sparse vs dense equivalence: verified
-- Ill-conditioned tests: pass (2 cases)
+- Examples: 3/3 run successfully, all optimal
 - Benchmarks: Phase 11
 
 ## Known Limitations
 
-- Dense/sparse split via options; IPM/Mehrotra still default to dense.
-- No formal benchmark suite yet (Phase 11).
+- Dense KKT path default in solve(); sparse wiring to be exposed in Phase 11.
 
 ## Last Verified
 
@@ -75,4 +72,4 @@ Phase 7 - Numerical Linear Algebra & Sparse KKT
 
 ## Next Action
 
-Begin Phase 8 - public solve() API and result/config objects.
+Begin Phase 9 - build validation corpus and compare with reference solvers.
