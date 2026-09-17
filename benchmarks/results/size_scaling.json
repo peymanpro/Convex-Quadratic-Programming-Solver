@@ -1,0 +1,119 @@
+{
+  "env": {
+    "python": "3.12.10",
+    "platform": "Windows-10-10.0.19045-SP0",
+    "processor": "Intel64 Family 6 Model 142 Stepping 9, GenuineIntel",
+    "numpy": "2.5.3"
+  },
+  "sizes": [
+    5,
+    10,
+    20,
+    40,
+    80
+  ],
+  "mehrotra": [
+    {
+      "n": 5.0,
+      "p": 2.0,
+      "status_ok": 1.0,
+      "iterations": 5.0,
+      "runtime_s": 0.0013066999999864493,
+      "primal_residual": 0.0,
+      "dual_residual": 1.993987443450769e-16,
+      "duality_gap": 2.0213661097214e-10
+    },
+    {
+      "n": 10.0,
+      "p": 5.0,
+      "status_ok": 1.0,
+      "iterations": 6.0,
+      "runtime_s": 0.0012609000004886184,
+      "primal_residual": 0.0,
+      "dual_residual": 1.7208456881689926e-15,
+      "duality_gap": 2.2468437371216193e-09
+    },
+    {
+      "n": 20.0,
+      "p": 10.0,
+      "status_ok": 1.0,
+      "iterations": 7.0,
+      "runtime_s": 0.0015194999978120904,
+      "primal_residual": 0.0,
+      "dual_residual": 2.9911628729450968e-12,
+      "duality_gap": 9.628169729625432e-11
+    },
+    {
+      "n": 40.0,
+      "p": 20.0,
+      "status_ok": 1.0,
+      "iterations": 8.0,
+      "runtime_s": 0.0023148000000219326,
+      "primal_residual": 2.2861712523081223e-12,
+      "dual_residual": 1.7905676941154525e-12,
+      "duality_gap": 5.928259543884756e-11
+    },
+    {
+      "n": 80.0,
+      "p": 40.0,
+      "status_ok": 1.0,
+      "iterations": 8.0,
+      "runtime_s": 0.0035303000004205387,
+      "primal_residual": 0.0,
+      "dual_residual": 5.8761884247360285e-12,
+      "duality_gap": 1.6999325316550884e-09
+    }
+  ],
+  "ipm": [
+    {
+      "n": 5.0,
+      "p": 2.0,
+      "status_ok": 1.0,
+      "iterations": 10.0,
+      "runtime_s": 0.0013790999983029906,
+      "primal_residual": 0.0,
+      "dual_residual": 3.158052752746253e-16,
+      "duality_gap": 1.0097008088290363e-09
+    },
+    {
+      "n": 10.0,
+      "p": 5.0,
+      "status_ok": 1.0,
+      "iterations": 12.0,
+      "runtime_s": 0.0019190000020898879,
+      "primal_residual": 0.0,
+      "dual_residual": 4.440892098500626e-16,
+      "duality_gap": 1.9994928643632334e-09
+    },
+    {
+      "n": 20.0,
+      "p": 10.0,
+      "status_ok": 1.0,
+      "iterations": 12.0,
+      "runtime_s": 0.001720000000204891,
+      "primal_residual": 0.0,
+      "dual_residual": 9.992007221626409e-16,
+      "duality_gap": 8.010212374085695e-09
+    },
+    {
+      "n": 40.0,
+      "p": 20.0,
+      "status_ok": 1.0,
+      "iterations": 15.0,
+      "runtime_s": 0.0025516999994579237,
+      "primal_residual": 0.0,
+      "dual_residual": 1.1546319456101628e-14,
+      "duality_gap": 1.3889136100542083e-09
+    },
+    {
+      "n": 80.0,
+      "p": 40.0,
+      "status_ok": 1.0,
+      "iterations": 16.0,
+      "runtime_s": 0.004599700001563178,
+      "primal_residual": 0.0,
+      "dual_residual": 5.995204332975845e-15,
+      "duality_gap": 2.2859213370032844e-09
+    }
+  ]
+}
