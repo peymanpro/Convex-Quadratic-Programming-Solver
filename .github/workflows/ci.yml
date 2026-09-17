@@ -33,3 +33,39 @@ jobs:
       - name: Pytest
         run: pytest --cov=solver --cov-report=term-missing
 
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t convex-quadratic-programming-solver:ci .
+      - name: Run container
+        run: |
+          docker run --rm -d --name cqp -p 8000:8000 convex-quadratic-programming-solver:ci
+          for i in $(seq 1 20); do
+            if curl -sf http://127.0.0.1:8000/api/v1/health/ >/dev/null; then
+              echo "Health OK"; break
+            fi
+            sleep 1
+          done
+          curl -sf http://127.0.0.1:8000/api/v1/health/
+          curl -sf http://127.0.0.1:8000/api/v1/version/
+          docker stop cqp
+
+  reference-benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install "numpy>=1.26,<3" "scipy>=1.11"
+          pip install -e .[bench] --no-deps
+          pip install "osqp>=1.0" "clarabel>=0.9"
+      - name: Reference comparison
+        run: python -m benchmarks.compare_reference
+
