@@ -52,8 +52,9 @@ criteria of the project roadmap.
 
 ## 7. Reference Comparisons
 
-- OSQP used as external reference for random QPs up to n = 40.
-- Objective difference <= 1e-4, solution difference <= 3e-5.
+- OSQP and Clarabel used as external references for random QPs up to n = 40.
+- OSQP: objective difference <= 1e-4, solution difference <= 3e-5.
+- Clarabel: objective and solution agreement at the 1e-9 level.
 
 **Status: PASS.**
 

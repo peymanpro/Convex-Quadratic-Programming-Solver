@@ -23,9 +23,11 @@ Representative Mehrotra results:
 
 Exact numbers: benchmarks/results/size_scaling.json.
 
-## Reference Comparison (OSQP)
+## Reference Comparison (OSQP and Clarabel)
 
 Command: python -m benchmarks.compare_reference
+
+Both OSQP and Clarabel are used as independent references.
 
 | n | p | objective diff | x diff |
 | --- | --- | --- | --- |
@@ -33,6 +35,8 @@ Command: python -m benchmarks.compare_reference
 | 10 | 5 | ~7e-5 | ~9e-6 |
 | 20 | 10 | ~8e-5 | ~2e-5 |
 | 40 | 20 | ~4e-5 | ~5e-6 |
+
+Clarabel agrees to ~1e-9 on objective and solution (stronger agreement than OSQP).
 
 Exact numbers: benchmarks/results/reference_compare.json.
 

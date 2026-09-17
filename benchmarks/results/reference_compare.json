@@ -7,8 +7,12 @@
     "our_iters": 5.0,
     "osqp_status": 1.0,
     "osqp_obj": -0.6901598583460234,
-    "obj_diff": 4.700906330867838e-12,
-    "x_diff": 1.556841098926398e-06
+    "osqp_obj_diff": 4.700906330867838e-12,
+    "osqp_x_diff": 1.556841098926398e-06,
+    "clarabel_status": "Solved",
+    "clarabel_obj": -0.6901598583507244,
+    "clarabel_obj_diff": 0.0,
+    "clarabel_x_diff": 3.8879303942973564e-09
   },
   {
     "n": 10.0,
@@ -18,8 +22,12 @@
     "our_iters": 6.0,
     "osqp_status": 1.0,
     "osqp_obj": 4.0022101512178745,
-    "obj_diff": 7.343155589634165e-05,
-    "x_diff": 9.327022652327877e-06
+    "osqp_obj_diff": 7.343155589634165e-05,
+    "osqp_x_diff": 9.327022652327877e-06,
+    "clarabel_status": "Solved",
+    "clarabel_obj": 4.0022835867419415,
+    "clarabel_obj_diff": 3.968170680934691e-09,
+    "clarabel_x_diff": 5.631475286094201e-10
   },
   {
     "n": 20.0,
@@ -29,8 +37,12 @@
     "our_iters": 7.0,
     "osqp_status": 1.0,
     "osqp_obj": -2.1657591643429797,
-    "obj_diff": 8.077110695214884e-05,
-    "x_diff": 2.4282275862097524e-05
+    "osqp_obj_diff": 8.077110695214884e-05,
+    "osqp_x_diff": 2.4282275862097524e-05,
+    "clarabel_status": "Solved",
+    "clarabel_obj": -2.165678393091598,
+    "clarabel_obj_diff": 1.4442935736269646e-10,
+    "clarabel_x_diff": 1.48267009780767e-10
   },
   {
     "n": 40.0,
@@ -40,7 +52,11 @@
     "our_iters": 8.0,
     "osqp_status": 1.0,
     "osqp_obj": -4.697690790404782,
-    "obj_diff": 3.984120999067642e-05,
-    "x_diff": 5.1255177057063506e-06
+    "osqp_obj_diff": 3.984120999067642e-05,
+    "osqp_x_diff": 5.1255177057063506e-06,
+    "clarabel_status": "Solved",
+    "clarabel_obj": -4.697650948551374,
+    "clarabel_obj_diff": 6.434177635128435e-10,
+    "clarabel_x_diff": 2.3728756737284584e-09
   }
 ]
