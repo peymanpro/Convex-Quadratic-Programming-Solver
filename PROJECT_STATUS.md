@@ -2,39 +2,36 @@
 
 ## Current Phase
 
-Phase 8 - Solver API & Public Python Interface
+Phase 9 - Rigorous Numerical Validation
 
 ## Current Subphase
 
-8.5 - Stable Public Interfaces
+9.9 - Error Metrics
 
 ## Overall Progress
 
-8 / 19 phases completed
+9 / 19 phases completed
 
 ## Completed
 
-- Phase 0 - Project Definition & Development Foundation
-- Phase 1 - Mathematical Foundations
-- Phase 2 - Problem Model & Validation
-- Phase 3 - Equality-Constrained QP
-- Phase 4 - Inequality Constraints & Slack Variables
-- Phase 5 - Primal-Dual Interior-Point Method
-- Phase 6 - Mehrotra Predictor-Corrector
-- Phase 7 - Numerical Linear Algebra & Sparse KKT
-- 8.1 Public API: solve(problem)
-- 8.2 Solver Configuration (IPMOptions)
-- 8.3 Result Object (SolverResult)
-- 8.4 Diagnostics Object (result.diagnostics, history dicts)
-- 8.5 Stable Public Interfaces (solver/__init__.py __all__)
+- Phase 0 through Phase 8
+- 9.1 Analytical Problems (Phase 1 examples reused)
+- 9.2 Random Convex QPs (50 feasible, 20 mixed)
+- 9.3 Feasible Problems verified
+- 9.4 Infeasible Problems (returned as max_iter/numerical_failure)
+- 9.5 Unbounded Problems noted in limitations
+- 9.6 Ill-Conditioned Problems (cond up to 1e6)
+- 9.7 Degenerate / Edge Cases (P=0, singleton, box, scaled)
+- 9.8 Reference Solvers deferred to Phase 11 (OSQP/Clarabel/CVXPY)
+- 9.9 Error Metrics: primal, dual, gap, objective
 
 ## In Progress
 
-- Phase 9 - Rigorous Numerical Validation
+- Phase 10 - Property-Based & Robust Testing
 
 ## Next
 
-- Phase 9 - analytical corpus, random QPs, ill-conditioned, failure modes, reference comparisons
+- Phase 10 - Hypothesis strategies for QP generation
 
 ## Blocked
 
@@ -42,11 +39,9 @@ Phase 8 - Solver API & Public Python Interface
 
 ## Technical Decisions
 
-- Public function: solver.solve(problem, *, method="mehrotra", options=None).
-- Default method: mehrotra. Alternative: ipm.
-- SolverResult includes status, x, objective, iterations, primal_residual, dual_residual, duality_gap, solve_time, y, z, s, diagnostics.
-- solve() runs validate_problem() before dispatch (raises InvalidProblem, NonConvexProblem, DimensionMismatch).
-- Three executable examples: portfolio, resource_allocation, svm_dual.
+- Corpus generators in validation/generators.py (random_psd, random_feasible_qp, random_mixed_qp, ill_conditioned_qp, infeasible_qp, degenerate_qp, singleton_qp).
+- Random QPs constructed with known strictly feasible interior point (h = G x0 + slack).
+- Reference solver comparison deferred to Phase 11 benchmark infrastructure.
 
 ## Scope Changes
 
@@ -54,17 +49,17 @@ Phase 8 - Solver API & Public Python Interface
 
 ## Acceptance Status
 
-- Tests: PASS (54 total)
+- Tests: PASS (60 total)
 - Lint: PASS
 - Formatting: PASS
 - Type Check: PASS
-- Coverage (solver): ~90 percent
-- Examples: 3/3 run successfully, all optimal
-- Benchmarks: Phase 11
+- Corpus: 50 feasible + 20 mixed + 10 ill-conditioned + 10 failure + 10 edge = 100 problems
+- Optimal agreement: all feasible/mixed/edge; failure modes return non-optimal status
 
 ## Known Limitations
 
-- Dense KKT path default in solve(); sparse wiring to be exposed in Phase 11.
+- Infeasible QPs cause RuntimeWarnings in mehrotra.py during divergence; status is returned correctly but numeric noise appears. Will add safeguard.
+- Unbounded QP detection not implemented (returns max_iter).
 
 ## Last Verified
 
@@ -72,4 +67,4 @@ Phase 8 - Solver API & Public Python Interface
 
 ## Next Action
 
-Begin Phase 9 - build validation corpus and compare with reference solvers.
+Begin Phase 10 - Hypothesis property-based tests.
