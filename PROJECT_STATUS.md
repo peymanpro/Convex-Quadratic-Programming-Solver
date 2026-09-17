@@ -2,15 +2,15 @@
 
 ## Current Phase
 
-Phase 6 - Mehrotra Predictor-Corrector
+Phase 7 - Numerical Linear Algebra & Sparse KKT
 
 ## Current Subphase
 
-6.8 - Comparison
+7.6 - Numerical Safeguards
 
 ## Overall Progress
 
-6 / 19 phases completed
+7 / 19 phases completed
 
 ## Completed
 
@@ -20,22 +20,21 @@ Phase 6 - Mehrotra Predictor-Corrector
 - Phase 3 - Equality-Constrained QP
 - Phase 4 - Inequality Constraints & Slack Variables
 - Phase 5 - Primal-Dual Interior-Point Method
-- 6.1 Affine Predictor Step
-- 6.2 Affine Step Length
-- 6.3 Affine Duality Measure
-- 6.4 Centering Parameter sigma = (mu_aff / mu)^3
-- 6.5 Corrector Step (r_c_cor = s*z + ds_aff*dz_aff - sigma*mu)
-- 6.6 Combined Direction
-- 6.7 Convergence Evaluation
-- 6.8 Comparison vs basic IPM (iterations, objective, complementarity)
+- Phase 6 - Mehrotra Predictor-Corrector
+- 7.1 KKT Structure Analysis
+- 7.2 Sparse Matrix Representation (scipy CSC)
+- 7.3 Sparse Linear Solve (SuperLU via scipy.sparse.linalg.splu)
+- 7.4 Dense vs Sparse equivalence test
+- 7.5 Numerical Conditioning (ill-conditioned tests)
+- 7.6 Numerical Safeguards (regularization, failure detection)
 
 ## In Progress
 
-- Phase 7 - Numerical Linear Algebra & Sparse KKT
+- Phase 8 - Solver API & Public Python Interface
 
 ## Next
 
-- Phase 7 - sparse KKT, dense vs sparse benchmark, conditioning
+- Phase 8 - public solve(), SolverConfig, Result object
 
 ## Blocked
 
@@ -43,10 +42,12 @@ Phase 6 - Mehrotra Predictor-Corrector
 
 ## Technical Decisions
 
-- Centering: sigma = min(1, (mu_aff/mu)^3), classic Mehrotra heuristic.
-- Corrector RHS includes second-order term ds_aff*dz_aff.
-- Reuses IPMOptions, IPMResult, _step_length, _solve_equality_only from solver.ipm.
-- Reduced KKT matrix built once per iteration from W = z/s.
+- Sparse KKT built with scipy.sparse.bmat and csc format.
+- Sparse factor: scipy.sparse.linalg.splu (SuperLU).
+- LinearSolverOptions.backend in {dense, sparse}; auto via sparse_threshold.
+- mypy override: scipy.* ignore_missing_imports = true (no stubs).
+- Regularization default 1e-10 on H block.
+- Singular matrices raise NumericalFailure.
 
 ## Scope Changes
 
@@ -54,19 +55,19 @@ Phase 6 - Mehrotra Predictor-Corrector
 
 ## Acceptance Status
 
-- Tests: PASS (37 total)
+- Tests: PASS (46 total)
 - Lint: PASS
 - Formatting: PASS
 - Type Check: PASS
 - Coverage (solver): ~90 percent
-- Mehrotra vs basic IPM: reproducible comparison in tests
-- Mehrotra analytical agreement: halfplane, box, mixed all optimal
-- Benchmarks: Not yet implemented
+- Sparse vs dense equivalence: verified
+- Ill-conditioned tests: pass (2 cases)
+- Benchmarks: Phase 11
 
 ## Known Limitations
 
-- Dense KKT only (sparse in Phase 7).
-- No explicit infeasibility detection yet (returns max_iter/numerical_failure).
+- Dense/sparse split via options; IPM/Mehrotra still default to dense.
+- No formal benchmark suite yet (Phase 11).
 
 ## Last Verified
 
@@ -74,4 +75,4 @@ Phase 6 - Mehrotra Predictor-Corrector
 
 ## Next Action
 
-Begin Phase 7 - sparse KKT and numerical linear algebra.
+Begin Phase 8 - public solve() API and result/config objects.
