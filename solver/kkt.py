@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
 
 import numpy as np
 from numpy.typing import NDArray
@@ -49,21 +48,3 @@ def solve_equality_qp(problem: QPProblem) -> EqualityKKTSolution:
     x = sol[:n]
     nu = sol[n:] if m else np.zeros(0)
     return EqualityKKTSolution(x=x, nu=nu)
-
-
-def build_reduced_kkt_sparse(
-    P: NDArray[np.float64],
-    A: NDArray[np.float64],
-    G: NDArray[np.float64],
-    W: NDArray[np.float64],
-) -> Any:
-    """Return reduced KKT matrix [[P + G^T W G, A^T], [A, 0]] as CSC."""
-    import scipy.sparse as sp
-
-    m = A.shape[0]
-    H = P + G.T @ (W[:, None] * G)
-    H_sp = sp.csc_matrix(H)
-    if m == 0:
-        return H_sp
-    A_sp = sp.csc_matrix(A)
-    return sp.bmat([[H_sp, A_sp.T], [A_sp, None]], format="csc")

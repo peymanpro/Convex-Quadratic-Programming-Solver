@@ -6,9 +6,9 @@ import numpy as np
 import scipy.sparse as sp
 
 from solver.ipm import IPMOptions, solve_ipm
-from solver.kkt import build_reduced_kkt_sparse
 from solver.linear_solver import (
     LinearSolverOptions,
+    assemble_kkt,
     factor_and_solve,
 )
 from solver.mehrotra import solve_mehrotra
@@ -31,14 +31,10 @@ def test_sparse_kkt_matches_dense() -> None:
     A = np.array([[1.0, 1.0]])
     G = np.array([[1.0, -1.0]])
     W = np.array([0.5])
-    H = P + G.T @ (W[:, None] * G)
-    K_dense = np.zeros((3, 3))
-    K_dense[:2, :2] = H
-    K_dense[:2, 2] = A[0]
-    K_dense[2, :2] = A[0]
-    K_sp = build_reduced_kkt_sparse(P, A, G, W)
-    assert sp.issparse(K_sp)
-    assert np.allclose(K_sp.toarray(), K_dense)
+    K_dense = assemble_kkt(P, A, G, W, 0.0, backend="dense")
+    K_sparse = assemble_kkt(P, A, G, W, 0.0, backend="sparse")
+    assert sp.issparse(K_sparse)
+    assert np.allclose(K_sparse.toarray(), K_dense)
 
 
 def test_sparse_kkt_no_equalities() -> None:
@@ -46,9 +42,9 @@ def test_sparse_kkt_no_equalities() -> None:
     A = np.zeros((0, 2))
     G = np.array([[1.0, 0.0]])
     W = np.array([1.0])
-    K_sp = build_reduced_kkt_sparse(P, A, G, W)
+    K_sp = assemble_kkt(P, A, G, W, 0.0, backend="sparse")
     H = P + G.T @ (W[:, None] * G)
-    assert np.allclose(K_sp.toarray(), H)
+    assert np.allclose(np.asarray(K_sp.todense()), H)
 
 
 def test_factor_and_solve_dense_matches_numpy() -> None:
@@ -111,7 +107,9 @@ def test_condition_number_reasonable() -> None:
     P = np.eye(4)
     G = np.array([[1.0, 0.0, 0.0, 0.0]])
     W = np.array([1.0])
-    K = build_reduced_kkt_sparse(P, np.zeros((0, 4)), G, W).toarray()
+    K = np.asarray(
+        assemble_kkt(P, np.zeros((0, 4)), G, W, 0.0, backend="sparse").todense()
+    )
     assert np.linalg.cond(K) < 1e6
 
 
