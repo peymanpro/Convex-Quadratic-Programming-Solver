@@ -2,15 +2,15 @@
 
 ## Current Phase
 
-Phase 5 - Primal-Dual Interior-Point Method
+Phase 6 - Mehrotra Predictor-Corrector
 
 ## Current Subphase
 
-5.8 - Failure States
+6.8 - Comparison
 
 ## Overall Progress
 
-5 / 19 phases completed
+6 / 19 phases completed
 
 ## Completed
 
@@ -19,22 +19,23 @@ Phase 5 - Primal-Dual Interior-Point Method
 - Phase 2 - Problem Model & Validation
 - Phase 3 - Equality-Constrained QP
 - Phase 4 - Inequality Constraints & Slack Variables
-- 5.1 Newton System
-- 5.2 Residual System
-- 5.3 Search Direction
-- 5.4 Step Length (fraction-to-boundary)
-- 5.5 Barrier Update
-- 5.6 Stopping Criteria
-- 5.7 Convergence Diagnostics (solver/diagnostics.py)
-- 5.8 Failure States (max_iter, numerical_failure)
+- Phase 5 - Primal-Dual Interior-Point Method
+- 6.1 Affine Predictor Step
+- 6.2 Affine Step Length
+- 6.3 Affine Duality Measure
+- 6.4 Centering Parameter sigma = (mu_aff / mu)^3
+- 6.5 Corrector Step (r_c_cor = s*z + ds_aff*dz_aff - sigma*mu)
+- 6.6 Combined Direction
+- 6.7 Convergence Evaluation
+- 6.8 Comparison vs basic IPM (iterations, objective, complementarity)
 
 ## In Progress
 
-- Phase 6 - Mehrotra Predictor-Corrector
+- Phase 7 - Numerical Linear Algebra & Sparse KKT
 
 ## Next
 
-- Phase 6 - affine predictor, corrector, combined direction
+- Phase 7 - sparse KKT, dense vs sparse benchmark, conditioning
 
 ## Blocked
 
@@ -42,11 +43,10 @@ Phase 5 - Primal-Dual Interior-Point Method
 
 ## Technical Decisions
 
-- Stopping: primal <= tol, dual <= tol, duality_gap <= tol, all in infinity norm.
-- Fraction-to-boundary eta = 0.995 default.
-- Numerical failure caught around the linear solve; status set accordingly.
-- IterationRecord captures step_length; IPM history records match.
-- Diagnostics module decoupled from IPM (records list, as_dicts()).
+- Centering: sigma = min(1, (mu_aff/mu)^3), classic Mehrotra heuristic.
+- Corrector RHS includes second-order term ds_aff*dz_aff.
+- Reuses IPMOptions, IPMResult, _step_length, _solve_equality_only from solver.ipm.
+- Reduced KKT matrix built once per iteration from W = z/s.
 
 ## Scope Changes
 
@@ -54,20 +54,19 @@ Phase 5 - Primal-Dual Interior-Point Method
 
 ## Acceptance Status
 
-- Tests: PASS (30 total)
+- Tests: PASS (37 total)
 - Lint: PASS
 - Formatting: PASS
 - Type Check: PASS
 - Coverage (solver): ~90 percent
-- Constrained QPs solved: 10/10 optimal
-- Failure states: tested (infeasible -> max_iter; singular -> numerical_failure/max_iter)
-- Documentation: interior-point-method.md added
+- Mehrotra vs basic IPM: reproducible comparison in tests
+- Mehrotra analytical agreement: halfplane, box, mixed all optimal
 - Benchmarks: Not yet implemented
 
 ## Known Limitations
 
-- Basic IPM (no Mehrotra yet).
 - Dense KKT only (sparse in Phase 7).
+- No explicit infeasibility detection yet (returns max_iter/numerical_failure).
 
 ## Last Verified
 
@@ -75,4 +74,4 @@ Phase 5 - Primal-Dual Interior-Point Method
 
 ## Next Action
 
-Begin Phase 6 - Mehrotra predictor-corrector.
+Begin Phase 7 - sparse KKT and numerical linear algebra.
