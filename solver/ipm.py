@@ -169,6 +169,9 @@ def _solve_ipm_impl(
         ):
             status = "optimal"
             break
+        if it > 5 and res.primal > 1e3 and res.stationarity < 1e-6:
+            status = "infeasible"
+            break
         if it == options.max_iter:
             break
 
