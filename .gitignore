@@ -36,3 +36,5 @@ htmlcov/
 *.sqlite3
 api/db.sqlite3
 __pycache__/
+
+api/schema.yml

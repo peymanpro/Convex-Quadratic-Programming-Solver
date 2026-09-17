@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from drf_spectacular.utils import extend_schema, inline_serializer
+from rest_framework import serializers as drf_serializers
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -48,6 +50,14 @@ EXAMPLES = [
 ]
 
 
+@extend_schema(
+    responses={
+        200: inline_serializer(
+            name="HealthResponse",
+            fields={"status": drf_serializers.CharField()},
+        )
+    }
+)
 class HealthView(APIView):
     authentication_classes: list[str] = []
     permission_classes: list[str] = []
@@ -56,6 +66,14 @@ class HealthView(APIView):
         return Response({"status": "ok"})
 
 
+@extend_schema(
+    responses={
+        200: inline_serializer(
+            name="VersionResponse",
+            fields={"version": drf_serializers.CharField()},
+        )
+    }
+)
 class VersionView(APIView):
     authentication_classes: list[str] = []
     permission_classes: list[str] = []
@@ -64,6 +82,14 @@ class VersionView(APIView):
         return Response({"version": __version__})
 
 
+@extend_schema(
+    responses={
+        200: inline_serializer(
+            name="ExamplesResponse",
+            fields={"examples": drf_serializers.ListField()},
+        )
+    }
+)
 class ExamplesView(APIView):
     authentication_classes: list[str] = []
     permission_classes: list[str] = []
@@ -72,6 +98,11 @@ class ExamplesView(APIView):
         return Response({"examples": EXAMPLES})
 
 
+@extend_schema(
+    request=QPProblemSerializer,
+    responses={200: SolveResultSerializer},
+    description=("Solve a convex QP: min 0.5 x^T P x + q^T x s.t. A x = b, G x <= h."),
+)
 class SolveQPView(APIView):
     authentication_classes: list[str] = []
     permission_classes: list[str] = []
