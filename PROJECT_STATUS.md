@@ -2,31 +2,33 @@
 
 ## Current Phase
 
-Phase 0 — Project Definition & Development Foundation
+Phase 1 - Mathematical Foundations
 
 ## Current Subphase
 
-0.5 — Initial CI (complete); entering Phase 1
+1.6 - Documentation
 
 ## Overall Progress
 
-0 / 19 phases completed (Phase 0 complete, awaiting acceptance sign-off)
+1 / 19 phases completed
 
 ## Completed
 
-- 0.1 Define Problem Scope
-- 0.2 Repository Initialization
-- 0.3 Development Tooling
-- 0.4 Initial Architecture
-- 0.5 Initial CI
+- Phase 0 - Project Definition & Development Foundation
+- 1.1 Convexity
+- 1.2 Standard QP Formulation
+- 1.3 Lagrangian
+- 1.4 KKT Conditions
+- 1.5 Optimality Interpretation
+- 1.6 Documentation
 
 ## In Progress
 
-- Phase 0 acceptance verification
+- Phase 1 acceptance verification
 
 ## Next
 
-- Phase 1 — Mathematical Foundations
+- Phase 2 - Problem Model & Validation
 
 ## Blocked
 
@@ -34,29 +36,26 @@ Phase 0 — Project Definition & Development Foundation
 
 ## Technical Decisions
 
-- Python 3.11+ required (local: 3.12.10).
-- NumPy and SciPy for numerical primitives.
-- Ruff for lint + format.
-- mypy strict mode.
-- pytest + pytest-cov for testing.
-- hypothesis for property-based tests (later phases).
-- pre-commit hooks mirror CI.
-- Setuptools explicit package discovery: only `solver` is the distributable package.
+- Python 3.12 (required by numpy 2.x type stubs); requires-python >= 3.12.
+- Ruff N806 ignored: matrix names P, A, G follow mathematical notation.
+- Setuptools packages: solver (core) and validation (analytical examples).
+- Documentation uses $$ ... $$ for block math (GitHub MathJax compatible).
 
 ## Scope Changes
 
-- None
+- Python minimum raised from 3.11 to 3.12 to match numpy 2.x stub requirements.
 
 ## Acceptance Status
 
-- Tests: PASS (1 smoke test)
+- Tests: PASS
 - Lint: PASS
 - Formatting: PASS
 - Type Check: PASS
 - Coverage: Not yet measured
 - Benchmarks: Not yet implemented
 - Reference Comparisons: Not yet implemented
-- Documentation: README + PROJECT_STATUS initialized
+- Documentation: mathematical-formulation.md, kkt-conditions.md, analytical-examples.md
+- Analytical KKT checks: 3/3 PASS
 
 ## Known Limitations
 
@@ -68,4 +67,4 @@ Phase 0 — Project Definition & Development Foundation
 
 ## Next Action
 
-Begin Phase 1.1 — document convexity foundations in docs/.
+Begin Phase 2 - typed QP problem model and validation.
