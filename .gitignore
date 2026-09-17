@@ -31,3 +31,8 @@ htmlcov/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+
+# Django
+*.sqlite3
+api/db.sqlite3
+__pycache__/

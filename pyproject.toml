@@ -46,15 +46,18 @@ ignore = ["N803", "N806"]
 "tests/**" = ["N802", "N803"]
 
 [tool.mypy]
+exclude = ["^api/"]
 python_version = "3.12"
 strict = true
 warn_return_any = true
 warn_unused_configs = true
 
 [[tool.mypy.overrides]]
-module = ["scipy.*"]
+module = ["scipy.*", "django.*", "rest_framework.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "qp_api.settings"
+pythonpath = ["api"]
 testpaths = ["tests"]
 python_files = ["test_*.py"]

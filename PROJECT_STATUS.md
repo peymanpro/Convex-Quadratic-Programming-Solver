@@ -2,32 +2,35 @@
 
 ## Current Phase
 
-Phase 12 - Real-World Examples
+Phase 13 - Django REST API
 
 ## Current Subphase
 
-12.5 - Example Documentation
+13.8 - Error Mapping
 
 ## Overall Progress
 
-12 / 19 phases completed
+13 / 19 phases completed
 
 ## Completed
 
-- Phase 0 through Phase 11
-- 12.1 Portfolio Optimization (examples/portfolio.py)
-- 12.2 Resource Allocation (examples/resource_allocation.py)
-- 12.3 Support Vector Machine Dual (examples/svm_dual.py)
-- 12.4 Model Predictive Control (examples/mpc.py)
-- 12.5 Example Documentation (examples/README.md)
+- Phase 0 through Phase 12
+- 13.1 Django/DRF setup (api/qp_api, api/solver_service)
+- 13.2 Solver Adapter (api/solver_service/services.py)
+- 13.3 Request Validation (serializers.py)
+- 13.4 Solve Endpoint POST /api/v1/solve/qp/
+- 13.5 Health Endpoint GET /api/v1/health/
+- 13.6 Version Endpoint GET /api/v1/version/
+- 13.7 Examples Endpoint GET /api/v1/examples/
+- 13.8 Error Mapping (400 invalid/nonconvex/dim, 422 numerical)
 
 ## In Progress
 
-- Phase 13 - Django REST API
+- Phase 14 - OpenAPI & Swagger
 
 ## Next
 
-- Phase 13 - Django + DRF setup, solve endpoint
+- Phase 14 - drf-spectacular, schema, /api/docs/
 
 ## Blocked
 
@@ -35,25 +38,29 @@ Phase 12 - Real-World Examples
 
 ## Technical Decisions
 
-- Four examples run end-to-end; each documented in examples/README.md.
-- Documentation includes problem, formulation, QP transformation, result, interpretation.
-- MPC example builds prediction matrices (Phi, Gamma) explicitly.
+- Django 6.1.1 + DRF 3.18.1.
+- Optimization logic stays in solver package; api/solver_service only adapts.
+- Solver is callable without Django (verified by all prior tests).
+- pytest-django installed; DJANGO_SETTINGS_MODULE and pythonpath = ["api"] in pyproject.toml.
+- mypy excludes ^api/ (Django lacks type stubs).
 
 ## Scope Changes
 
 - Python minimum raised from 3.11 to 3.12.
+- pytest-django and Django added as dev deps.
 
 ## Acceptance Status
 
-- Tests: PASS (64 total)
+- Tests: PASS (70 total, including 6 API integration tests)
 - Lint: PASS
 - Formatting: PASS
-- Type Check: PASS
-- Examples: 4/4 run successfully with status optimal
+- Type Check: PASS (solver + validation; api excluded)
+- API endpoints: health, version, examples, solve all work
 
 ## Known Limitations
 
-- None
+- Infeasible QP triggers RuntimeWarnings during divergence.
+- SQLite dev DB only (no persistence required).
 
 ## Last Verified
 
@@ -61,4 +68,4 @@ Phase 12 - Real-World Examples
 
 ## Next Action
 
-Begin Phase 13 - Django REST API.
+Begin Phase 14 - OpenAPI schema and Swagger UI.
