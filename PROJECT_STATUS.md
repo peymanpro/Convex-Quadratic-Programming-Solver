@@ -2,34 +2,37 @@
 
 ## Current Phase
 
-Phase 19 - Flagship Release
+Post-Release Corrective Audit
 
 ## Current Subphase
 
-19.7 - Repository Cleanup
+Phase 19 (original) conceptually complete; corrective audit in progress.
 
 ## Overall Progress
 
-19 / 19 phases completed
+19 / 19 original roadmap phases conceptually complete.
+Corrective audit: in progress.
 
 ## Completed
 
-- Phase 0 through Phase 18
-- 19.1 README Finalization
-- 19.2 Benchmark Report (docs/benchmark-report.md)
-- 19.3 Architecture Diagram (docs/architecture.md)
-- 19.4 Example Gallery (examples/README.md)
-- 19.5 Release Notes (docs/release-notes-v0.1.0.md)
-- 19.6 Version Tag (v0.1.0)
-- 19.7 Repository Cleanup
+- Phases 0 through 18 (original roadmap).
+- Phase 19.1 - 19.5 (README, benchmark report, architecture, example gallery, release notes).
+- Release v0.1.0 (tag, pushed).
+- Release v0.2.0 (tag, pushed): sparse backend API, py.typed, Clarabel reference, unbounded/infeasible heuristics, README polish.
 
 ## In Progress
 
-- Release push to origin
+- Post-Release Corrective Audit (issues 1-14 from external review).
 
 ## Next
 
-- Maintain and extend (Clarabel reference, infeasibility certificate, unbounded detection)
+- Sparse-native KKT assembly path (Issue 3).
+- Dense-vs-sparse benchmark (Issue 4).
+- Benchmark dependency group (Issue 5).
+- Tighten infeasible / unbounded tests (Issues 6, 7).
+- Documentation corrections (Issues 8, 9).
+- Rewrite audit.md (Issue 10).
+- Verify Docker (Issue 11) and CI (Issue 12).
 
 ## Blocked
 
@@ -37,28 +40,29 @@ Phase 19 - Flagship Release
 
 ## Technical Decisions
 
-- Released as v0.1.0 (semantic versioning).
-- All acceptance criteria satisfied.
+- Canonical released version: v0.2.0 (current).
+- Historical releases preserved: v0.1.0, v0.2.0.
+- Version source of truth: pyproject.toml.
+- Coverage measured for source = solver only (not whole repo).
 
 ## Scope Changes
 
-- Python minimum raised from 3.11 to 3.12.
+- Python minimum 3.12 (from numpy 2.x stub requirements).
 
 ## Acceptance Status
 
-- Tests: PASS (73 total)
+- Tests: 79 collected, 79 passing.
 - Lint: PASS
 - Formatting: PASS
 - Type Check: PASS
-- Coverage (solver): 96 percent
-- Analytical KKT checks: 3/3 pass
-- Reference (OSQP): PASS
-- Benchmarks: reproducible, JSON recorded
-- Documentation: complete set in docs/ and README
+- Coverage (source = solver): 93.21% (threshold 90%).
+- Analytical KKT checks: 3/3 pass.
+- References: OSQP and Clarabel comparisons available.
 
 ## Known Limitations
 
 - See docs/limitations.md.
+- Sparse path currently converts a dense KKT to CSC; sparse-native assembly in progress.
 
 ## Last Verified
 
@@ -66,4 +70,4 @@ Phase 19 - Flagship Release
 
 ## Next Action
 
-Push main and tag v0.1.0 to origin.
+Fix version/test/coverage inconsistency across README and PROJECT_STATUS.

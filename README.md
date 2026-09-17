@@ -12,9 +12,9 @@ for **convex quadratic programming**, with a Django REST API.
 
 | Metric | Value |
 | --- | --- |
-| Version | v0.1.0 |
-| Tests | 79 passing |
-| Coverage (solver) | 96% |
+| Version | v0.2.0 |
+| Tests | 79 passing (0 failing) |
+| Coverage (source = solver) | 93% |
 | Lint / Format | ruff clean |
 | Type check | mypy strict (solver, validation) |
 | References | OSQP and Clarabel agreement |

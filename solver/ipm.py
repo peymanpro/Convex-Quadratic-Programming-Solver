@@ -7,7 +7,11 @@ from dataclasses import dataclass, field
 import numpy as np
 from numpy.typing import NDArray
 
-from solver.linear_solver import LinearSolverOptions, factor_and_solve
+from solver.linear_solver import (
+    LinearSolverOptions,
+    assemble_kkt,
+    factor_and_solve,
+)
 from solver.problem import QPProblem
 from solver.residuals import compute_residuals
 
@@ -176,14 +180,14 @@ def _solve_ipm_impl(
             break
 
         W = z / s
-        H = P + G.T @ (W[:, None] * G)
-        H = H + options.regularization * np.eye(n)
-
-        K = np.zeros((n + m, n + m), dtype=np.float64)
-        K[:n, :n] = H
-        if m:
-            K[:n, n:] = A.T
-            K[n:, :n] = A
+        K = assemble_kkt(
+            P,
+            A,
+            G,
+            W,
+            options.regularization,
+            backend=options.backend,  # type: ignore[arg-type]
+        )
 
         bx = -r_d + G.T @ (r_c / s) - G.T @ (W * r_g)
         rhs = np.concatenate([bx, -r_p]) if m else bx

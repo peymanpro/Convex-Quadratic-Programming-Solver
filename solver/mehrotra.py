@@ -3,30 +3,15 @@
 from __future__ import annotations
 
 import numpy as np
-from numpy.typing import NDArray
 
 from solver.ipm import IPMOptions, IPMResult, _solve_equality_only, _step_length
-from solver.linear_solver import LinearSolverOptions, factor_and_solve
+from solver.linear_solver import (
+    LinearSolverOptions,
+    assemble_kkt,
+    factor_and_solve,
+)
 from solver.problem import QPProblem
 from solver.residuals import compute_residuals
-
-
-def _build_reduced_kkt(
-    P: NDArray[np.float64],
-    A: NDArray[np.float64],
-    G: NDArray[np.float64],
-    W: NDArray[np.float64],
-    reg: float,
-) -> NDArray[np.float64]:
-    n = P.shape[0]
-    m = A.shape[0]
-    H = P + G.T @ (W[:, None] * G) + reg * np.eye(n)
-    K = np.zeros((n + m, n + m), dtype=np.float64)
-    K[:n, :n] = H
-    if m:
-        K[:n, n:] = A.T
-        K[n:, :n] = A
-    return K
 
 
 def _solve_mehrotra_impl(
@@ -118,7 +103,14 @@ def _solve_mehrotra_impl(
             break
 
         W = z / s
-        K = _build_reduced_kkt(P, A, G, W, options.regularization)
+        K = assemble_kkt(
+            P,
+            A,
+            G,
+            W,
+            options.regularization,
+            backend=options.backend,  # type: ignore[arg-type]
+        )
 
         # --- Affine predictor ---
         r_c_aff = s * z
