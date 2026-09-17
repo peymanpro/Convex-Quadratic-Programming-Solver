@@ -2,33 +2,33 @@
 
 ## Current Phase
 
-Phase 17 - Production-quality Engineering
+Phase 18 - Final Scientific Audit
 
 ## Current Subphase
 
-17.6 - Semantic Versioning
+18.6 - Failure Analysis
 
 ## Overall Progress
 
-17 / 19 phases completed
+18 / 19 phases completed
 
 ## Completed
 
-- Phase 0 through Phase 16
-- 17.1 Type Checking (mypy strict, api excluded)
-- 17.2 Code Quality (ruff lint + format)
-- 17.3 Coverage Measurement (solver package 96 percent, fail_under 90)
-- 17.4 CI Matrix (Python 3.12 and 3.13, lint + format + mypy + pytest)
-- 17.5 Release Workflow (build sdist and wheel on v* tags)
-- 17.6 Semantic Versioning (0.1.0)
+- Phase 0 through Phase 17
+- 18.1 Mathematical Audit
+- 18.2 Algorithm Audit
+- 18.3 Numerical Audit
+- 18.4 Benchmark Audit
+- 18.5 Reference Comparison Audit
+- 18.6 Failure Analysis
 
 ## In Progress
 
-- Phase 18 - Final Scientific Audit
+- Phase 19 - Flagship Release
 
 ## Next
 
-- Phase 18 - audit formulation, KKT, algorithm, numerics, benchmarks
+- Phase 19 - finalize README, benchmark report, release tag v0.1.0
 
 ## Blocked
 
@@ -36,9 +36,7 @@ Phase 17 - Production-quality Engineering
 
 ## Technical Decisions
 
-- Coverage scoped to solver package with fail_under = 90.
-- CI matrix: 3.12 and 3.13.
-- Release workflow uploads dist artifacts on tag push.
+- Audit document at docs/audit.md.
 
 ## Scope Changes
 
@@ -50,11 +48,12 @@ Phase 17 - Production-quality Engineering
 - Lint: PASS
 - Formatting: PASS
 - Type Check: PASS
-- Coverage (solver): 96 percent (target >= 90)
+- Coverage (solver): 96 percent
+- Audit: PASS with documented limitations
 
 ## Known Limitations
 
-- 2 RuntimeWarnings from infeasible test cases (documented).
+- See docs/limitations.md.
 
 ## Last Verified
 
@@ -62,4 +61,4 @@ Phase 17 - Production-quality Engineering
 
 ## Next Action
 
-Begin Phase 18 - scientific audit.
+Begin Phase 19 - flagship release preparation.
