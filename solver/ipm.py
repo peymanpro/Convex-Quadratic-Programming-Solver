@@ -173,7 +173,17 @@ def _solve_ipm_impl(
         ):
             status = "optimal"
             break
-        if it > 5 and res.primal > 1e3 and res.stationarity < 1e-6:
+        if it > 5 and (
+            (res.primal > 1e3 and res.stationarity < 1e-6)
+            or (
+                res.primal > 0.5
+                and res.stationarity > 0.5
+                and it >= 15
+                and len(history) >= 5
+                and history[-1]["primal_residual"]
+                >= 0.9 * history[-5]["primal_residual"]
+            )
+        ):
             status = "infeasible"
             break
         if it == options.max_iter:
