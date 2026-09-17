@@ -2,32 +2,32 @@
 
 ## Current Phase
 
-Phase 14 - OpenAPI & Swagger
+Phase 15 - Packaging & Developer Experience
 
 ## Current Subphase
 
-14.5 - Error Documentation
+15.5 - One-command startup
 
 ## Overall Progress
 
-14 / 19 phases completed
+15 / 19 phases completed
 
 ## Completed
 
-- Phase 0 through Phase 13
-- 14.1 drf-spectacular installed and configured
-- 14.2 OpenAPI schema (GET /api/schema/)
-- 14.3 Swagger UI (GET /api/docs/)
-- 14.4 Request/Response examples (in serializers + decorators)
-- 14.5 Error Documentation (schema covers 200/400; 400 handled via NonConvexProblem and other domain errors)
+- Phase 0 through Phase 14
+- 15.1 Python Package (editable install via pip install -e .)
+- 15.2 Optional CLI (cqp-solve solver.cli:main)
+- 15.3 Configuration via pyproject.toml
+- 15.4 Docker (Dockerfile for API)
+- 15.5 One-command startup (Dockerfile CMD + python -m ...)
 
 ## In Progress
 
-- Phase 15 - Packaging & Developer Experience
+- Phase 16 - Documentation
 
 ## Next
 
-- Phase 15 - package install, CLI, Dockerfile
+- Phase 16 - README, docs, architecture, limitations
 
 ## Blocked
 
@@ -35,10 +35,10 @@ Phase 14 - OpenAPI & Swagger
 
 ## Technical Decisions
 
-- drf-spectacular 0.30.0.
-- AutoSchema default; explicit extend_schema on all views.
-- SPECTACULAR_SETTINGS: title, description, version, SERVE_INCLUDE_SCHEMA=False.
-- Generated schema.yml is gitignored.
+- CLI entry point: cqp-solve (solver.cli:main).
+- Dockerfile targets Django API on port 8000.
+- Sample QP JSON at examples/halfplane.json.
+- CLI test uses pytest CaptureFixture for typed output.
 
 ## Scope Changes
 
@@ -46,16 +46,16 @@ Phase 14 - OpenAPI & Swagger
 
 ## Acceptance Status
 
-- Tests: PASS (72 total)
+- Tests: PASS (73 total)
 - Lint: PASS
 - Formatting: PASS
 - Type Check: PASS
-- OpenAPI schema generation: 0 warnings, 0 errors
-- Swagger UI loads at /api/docs/
+- CLI: verified via cqp-solve examples/halfplane.json
+- Docker: Dockerfile present (build not run in this environment)
 
 ## Known Limitations
 
-- 400 error body schema not formalized in OpenAPI (documented in README).
+- Docker build not verified locally (no Docker daemon).
 
 ## Last Verified
 
@@ -63,4 +63,4 @@ Phase 14 - OpenAPI & Swagger
 
 ## Next Action
 
-Begin Phase 15 - packaging, CLI, and Docker reproducibility.
+Begin Phase 16 - finalize README, add architecture.md, numerical-methods.md, limitations.md, benchmarks.md.
