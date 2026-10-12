@@ -2,26 +2,130 @@ name: Release
 
 on:
   push:
+    branches: [main]
     tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Optional version to publish; must match pyproject.toml"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
-  build:
+  release:
+    name: Validate, build, and publish
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Check out source and tags
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install
+          cache: pip
+
+      - name: Resolve and validate release source
+        id: version
+        shell: bash
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
         run: |
-          python -m pip install --upgrade pip build
+          set -euo pipefail
+          project_version="$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["version"])')"
+          tag="v$project_version"
+          if [[ "$REF_TYPE" == "tag" ]]; then
+            [[ "$REF_NAME" == "$tag" ]] || { echo "Tag $REF_NAME must match $tag." >&2; exit 1; }
+          elif git ls-remote --exit-code origin "refs/tags/$tag" >/dev/null 2>&1; then
+            git fetch origin "refs/tags/$tag:refs/tags/$tag"
+            git checkout --detach "$tag"
+            project_version="$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["version"])')"
+            [[ "v$project_version" == "$tag" ]] || { echo "Tag version mismatch." >&2; exit 1; }
+          fi
+          [[ "$project_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Expected MAJOR.MINOR.PATCH." >&2; exit 1; }
+          [[ -z "$INPUT_VERSION" || "$INPUT_VERSION" == "$project_version" ]] || { echo "Requested version does not match pyproject.toml." >&2; exit 1; }
+          echo "version=$project_version" >> "$GITHUB_OUTPUT"
+          echo "tag=v$project_version" >> "$GITHUB_OUTPUT"
+          echo "target_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Install solver and API test dependencies
+        run: |
+          python -m pip install --upgrade pip
           pip install "numpy>=1.26,<3" "scipy>=1.11"
+          pip install "pytest>=8,<9" "pytest-cov>=5,<8" pytest-django hypothesis ruff mypy
+          pip install "django>=5.0" "djangorestframework>=3.15" drf-spectacular
+          pip install "osqp>=1.0" "clarabel>=0.9"
           pip install -e . --no-deps
-      - name: Build sdist and wheel
-        run: python -m build
-      - name: Upload artifacts
+
+      - name: Ruff lint
+        run: ruff check .
+
+      - name: Ruff format check
+        run: ruff format --check .
+
+      - name: Mypy
+        run: mypy .
+
+      - name: Tests and coverage
+        run: pytest --cov=solver --cov-report=term-missing
+
+      - name: Build and smoke-test Docker image
+        run: |
+          docker build -t convex-quadratic-programming-solver:release .
+          docker run --rm -d --name cqp-release -p 8000:8000 convex-quadratic-programming-solver:release
+          trap 'docker stop cqp-release >/dev/null 2>&1 || true' EXIT
+          for i in $(seq 1 30); do
+            if curl -sf http://127.0.0.1:8000/api/v1/health/ >/dev/null; then
+              break
+            fi
+            sleep 2
+          done
+          curl -sf http://127.0.0.1:8000/api/v1/health/
+          curl -sf http://127.0.0.1:8000/api/v1/version/
+
+      - name: Compare against reference solvers
+        run: python -m benchmarks.compare_reference
+
+      - name: Build Python distributions
+        run: |
+          python -m pip install build
+          python -m build
+
+      - name: Preserve distribution artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: dist
+          name: convex-quadratic-programming-solver-${{ steps.version.outputs.version }}
           path: dist/*
 
+      - name: Publish GitHub Release if not already published
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ steps.version.outputs.tag }}
+          TARGET_SHA: ${{ steps.version.outputs.target_sha }}
+          REF_TYPE: ${{ github.ref_type }}
+        run: |
+          set -euo pipefail
+          if gh release view "$RELEASE_TAG" --repo "$GH_REPO" >/dev/null 2>&1; then
+            echo "Release $RELEASE_TAG already exists; no duplicate will be created."
+            exit 0
+          fi
+          if [[ "$REF_TYPE" == "tag" ]] || git ls-remote --exit-code origin "refs/tags/$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release create "$RELEASE_TAG" dist/* --verify-tag --repo "$GH_REPO" \
+              --title "Convex Quadratic Programming Solver $RELEASE_TAG" --generate-notes
+          else
+            gh release create "$RELEASE_TAG" dist/* --target "$TARGET_SHA" --repo "$GH_REPO" \
+              --title "Convex Quadratic Programming Solver $RELEASE_TAG" --generate-notes
+          fi
