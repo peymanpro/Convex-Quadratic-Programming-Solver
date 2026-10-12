@@ -142,6 +142,13 @@ tests/         unit, integration, property-based, and API tests
 - docs/audit.md
 - docs/limitations.md
 
+## Related mathematical implementations
+
+- [Robust Statistical Learning](https://github.com/peymanpro/Robust-Statistical-Learning) studies numerical conditioning, solver stability, regularization, and reference validation.
+- [Event-Driven Metaheuristic Optimization](https://github.com/peymanpro/Event-Driven-Metaheuristic-Optimization) examines dynamic constrained allocation and warm-start recovery with heuristic optimization methods.
+
+These repositories address complementary mathematical problems; this solver does not depend on either project.
+
 ## License
 
 MIT. See LICENSE.
