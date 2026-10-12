@@ -68,8 +68,8 @@ jobs:
           echo "tag=v$project_version" >> "$GITHUB_OUTPUT"
           echo "target_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-        if: steps.version.outputs.skip != 'true'
       - name: Install solver and API test dependencies
+        if: steps.version.outputs.skip != 'true'
         run: |
           python -m pip install --upgrade pip
           pip install "numpy>=1.26,<3" "scipy>=1.11"
@@ -78,24 +78,24 @@ jobs:
           pip install "osqp>=1.0" "clarabel>=0.9"
           pip install -e . --no-deps
 
-        if: steps.version.outputs.skip != 'true'
       - name: Ruff lint
+        if: steps.version.outputs.skip != 'true'
         run: ruff check .
 
-        if: steps.version.outputs.skip != 'true'
       - name: Ruff format check
+        if: steps.version.outputs.skip != 'true'
         run: ruff format --check .
 
-        if: steps.version.outputs.skip != 'true'
       - name: Mypy
+        if: steps.version.outputs.skip != 'true'
         run: mypy .
 
-        if: steps.version.outputs.skip != 'true'
       - name: Tests and coverage
+        if: steps.version.outputs.skip != 'true'
         run: pytest --cov=solver --cov-report=term-missing
 
-        if: steps.version.outputs.skip != 'true'
       - name: Build and smoke-test Docker image
+        if: steps.version.outputs.skip != 'true'
         run: |
           docker build -t convex-quadratic-programming-solver:release .
           docker run --rm -d --name cqp-release -p 8000:8000 convex-quadratic-programming-solver:release
@@ -109,25 +109,25 @@ jobs:
           curl -sf http://127.0.0.1:8000/api/v1/health/
           curl -sf http://127.0.0.1:8000/api/v1/version/
 
-        if: steps.version.outputs.skip != 'true'
       - name: Compare against reference solvers
+        if: steps.version.outputs.skip != 'true'
         run: python -m benchmarks.compare_reference
 
-        if: steps.version.outputs.skip != 'true'
       - name: Build Python distributions
+        if: steps.version.outputs.skip != 'true'
         run: |
           python -m pip install build
           python -m build
 
-        if: steps.version.outputs.skip != 'true'
       - name: Preserve distribution artifacts
+        if: steps.version.outputs.skip != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: convex-quadratic-programming-solver-${{ steps.version.outputs.version }}
           path: dist/*
 
-        if: steps.version.outputs.skip != 'true'
       - name: Publish GitHub Release if not already published
+        if: steps.version.outputs.skip != 'true'
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
