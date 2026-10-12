@@ -149,6 +149,12 @@ tests/         unit, integration, property-based, and API tests
 
 These repositories address complementary mathematical problems; this solver does not depend on either project.
 
+## Automated releases
+
+The release workflow validates the version in `pyproject.toml`, then runs Ruff lint and formatting checks, mypy, the test suite with coverage, a Docker health/version smoke test, reference-solver comparisons, and a Python distribution build. Successful releases attach the wheel and source distribution to the GitHub Release.
+
+To prepare a future release, increment `[project].version` in `pyproject.toml` and merge to `main`, or push a matching `vMAJOR.MINOR.PATCH` tag. Existing tags are never moved or overwritten; a version that already has a tag must be advanced before it can be released from newer code.
+
 ## License
 
 MIT. See LICENSE.
